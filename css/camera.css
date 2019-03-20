@@ -1,0 +1,52 @@
+#backdrop {
+
+  position: absolute;
+  text-align: left !important;
+}
+.Camcontainer {
+  display: inline-block;
+  margin-right: 640px;
+}
+#curtain {
+  width: 640px;
+  height: 480px;
+  margin: auto;
+  position: fixed;
+  margin: 0;
+  /*  background-image: url("../img/visor.png"); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin-bottom: 40px;
+}
+.cameraModal {
+  background-color: #262626 !important;
+  width: 50%;
+}
+.controles {
+  margin-bottom: 0px;
+ 
+}
+
+#video_box {
+  position:relative;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+#video_overlays {
+  position:absolute;
+  width: 100%;
+  z-index:300000;
+  text-align:center;
+
+}
+#video_overlays img{
+  width: 100%;
+  margin: 0;
+  max-width: 640px;
+  display: inline-block;
+}
+video{
+  max-height: 95%
+}
