@@ -1,361 +1,203 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
+ 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Connect 4</title>
-  <meta name="viewport" content="widtr=device-widtr ">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/game.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/topbar.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/modal.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/camera.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/main.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/score.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/menubar.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="css/responsive.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
-   integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
-    crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css?family=Coiny|Indie+Flower" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLASSES</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+        integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 </head>
+ 
 <body>
-  <nav id="lateral" class="lateral">
-    <ul>
-      <li class="card">
-        <img class="profilePicture" id="profilePicture" src="img/foto.PNG" alt="foto">
-        <div class="container">
-          <h4 id="currentPlayerName">JUGADOR 1</h4>
-        </div>
-      </li>
-      <li class="botonLateral" onclick="iniciarPartida();">
-        <a href="#">
-          <i class="fas fa-gamepad fa-fw"></i>
-          <span>INICIAR PARTIDA</span>
-        </a>
-      </li>
-      <li class="botonLateral" onclick="modalJugadores();">
-        <a href="#">
-          <i class="fas fa-users fa-fw"></i>
-         <span>
-            MODIFICAR JUGADORES
-         </span> 
-        </a>
-      </li>
-      <li class="botonLateral bottom3" onclick="showReglas();"><a href="#">
-          <i class="fas fa-graduation-cap fa-fw"></i>
-         <span>
-            REGLAS DEL JUEGO
-         </span>
-        </a>
-      </li>
-      <li class="botonLateral bottom2" onclick="borrarScore();">
-        <a href="#">
-          <i class="fas fa-trash-alt fa-fw"></i>
-         <span>
-            BORRAR SCORE
-         </span> 
-        </a>
-      </li>
-      <li class="botonLateral bottom" onclick="LSclear();">
-        <a href="#">
-          <i class="fas fa-trash-alt fa-fw"></i>
-        <span>
-            BORRAR DATOS
-        </span>  
-        </a>
-      </li>
-    </ul>
-  </nav>
-  <nav class="superior">
-    <ul>
-      <li>
-        <img id="logo" src="img/logo.png">
-      </li>
-      <li class="itemRight" onclick="showCreditos();">
-          <a>
-            <i class="fas fa-award"></i>
-            <span class="topTitle">
-              Creditos
-            </span>
-          </a>
-        </li>
-        <li class="itemRight" id='scorebtn'>
-            <a>
-              <i class="fas fa-trophy"></i>
-              <span class="topTitle">
-                  Scores
-                </span>
-            </a>
-          </li>
-    </ul>
-  </nav>
-  <nav class="lateralDerecha" id="scores">
-    <h2>
-      <i class="fas fa-trophy fa-fw"></i>
-      SCORE
-    </h2>
-    <ul id="scoreList">
-      <li>
-        <!-- PLANTILLA
-        <img src="" />
-        <h4>
-          {{ NOMBRE }}  
-        </h4>
-        <break></break>
-        {{ Partidas Ganadas 2 }}
-      </li>-->
-    </ul>
-  </nav>
-
-  <div id="game">
-    <table id="c4Table">
-      <tr id="topRow">
-        <td id="h,1" data-value="r">
-          <div class="content"></div>
-        </td>
-        <td id="h,2" data-value="r">
-          <div class="content"></div>
-        </td>
-        <td id="h,3" data-value="r">
-          <div class="content"></div>
-        </td>
-        <td id="h,4" data-value="r">
-          <div class="content"></div>
-        </td>
-        <td id="h,5" data-value="r">
-          <div class="content"></div>
-        </td>
-        <td id="h,6" data-value="r">
-          <div class="content"></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gameRow" data-value="-1" id="A1">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="A2">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="A3">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="A4">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="A5">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="A6">
-          <div class="content"></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gameRow" data-value="-1" id="B1">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="B2">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="B3">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="B4">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="B5">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="B6">
-          <div class="content"></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gameRow" data-value="-1" id="C1">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="C2">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="C3">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="C4">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="C5">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="C6">
-          <div class="content"></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gameRow" data-value="-1" id="D1">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="D2">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="D3">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="D4">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="D5">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="D6">
-          <div class="content"></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gameRow" data-value="-1" id="E1">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="E2">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="E3">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="E4">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="E5">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="E6">
-          <div class="content"></div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gameRow" data-value="-1" id="F1">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="F2">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="F3">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="F4">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="F5">
-          <div class="content"></div>
-        </td>
-        <td class="gameRow" data-value="-1" id="F6">
-          <div class="content"></div>
-        </td>
-      </tr>
+    <img src="https://atomboxcrm-images.s3.amazonaws.com/moove_indoor/moove_logo.png"/>
+    <table class="table sortable styled-table" id="results">
+        <thead >
+            <tr>
+                <th class="centered-cell" scope="col"><a href="?all">Coach</a></th>
+                <th class="centered-cell" scope="col">Fecha</th>
+                <th class="centered-cell" scope="col">Disponibilidad</th>
+            </tr>
+        </thead>
+        <tbody id='tdata'>
+ 
+        </tbody>
     </table>
-  </div>
-  <footer>
-    <p>Computación Movíl - Cetys Universidad</p>
-  </footer>
-  <!-- #region Modales -->
-  <div id="UsersModal" class="modal">
-    <div class="modal-content">
-      <div id="UserSelect" hidden>
-        <span class="closeUsersModal close">&times;</span>
-        <h2>SELECCIONA JUGADORES</h2>
-        <div style="width: 100%; overflow: hidden;">
-          <div style="width: 50%; float: left;">
-            <h2 class="h2Title">Jugador 1</h2>
-            <img id="UsersModal_Pic1" class="profilePicture" src="img/foto.png">
-            <select name="UserModal-selected1" id="UserModal-selected1" onchange="select1()">
-              <option value="0">Enrique</option>
-
-            </select>
-          </div>
-          <div style="width: 50%; float: left;">
-            <h2 class="h2Title">Jugador 2</h2>
-            <img id="UsersModal_Pic2" class="profilePicture" src="img/foto.png">
-            <select name="UserModal-selected2" id="UserModal-selected2" onchange="select2()">
-              <option value="0">Volvo</option>
-            </select>
-          </div>
-          <div class="UserModalControles">
-            <button id="createnewUser" onclick="showNewUserForm();" class="btn greenBtn" type="button"> <i class="fas fa-plus fa-fw"></i>
-              Nuevo</button>
-          </div>
-        </div>
-      </div>
-      <div id="UserAdd">
-        <h2>NUEVO JUGADOR</h2>
-        <img src="img/standarPlayer.png" alt="" class="profilePicture" id="NewUserPic">
-        <form><br>
-          <input id="newUserName" type="text" value="" placeholder="Ingresar Nombre" autofocus>
-          <br><button class="btn greenBtn" type="button" onclick="tomarFoto()"><i class="fas fa-camera fa-fw"></i>
-            Tomar Foto</button> <br> <br>
-          Seleccionar Imagen desde archivo: <br>
-          <input id="newUserPicFile" type="file" name="foto" value="Mouse" onchange="onFileSelected(event);" value="data/demoImages"
-            accept="image/x-png,image/gif,image/jpeg">
-          <br><br>
-        </form>
-        <div class="UserModalControles">
-          <button id="createnewUser_cancel" onclick="resetUsersModal();" class="btn redBtn" type="button"> <i class="fas fa-times fa-fw"></i>
-            Cancelar</button>
-          <button id="createnewUser_add" class="btn greenBtn" type="button" onclick="saveNewUser();"> <i class="fas fa-plus fa-fw"></i>
-            Guardar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="RulesModal" class="modal">
-    <div class="modal-content">
-      <span class="closeRulesModal close">&times;</span>
-      <iframe src="data/ConnectFour.PDF" frameborder="0" width="100%" height="550" id="pdf"></iframe>
-    </div>
-  </div>
-  <div id="CameraModal" class="modal">
-    <div class="modal-content cameraModal">
-        <div id="wrap_video">
-            <div id="video_box">
-                <div id="video_overlays">
-                  <img src="img/visor.png">
-                </div>
-                <div>
-                    <video id="video" width="100%" height="480" autoplay></video>
-                    <canvas id="canvas" width="400" height="400" hidden></canvas>
-                </div>
-            </div>
-        </div>
-      <div class="controles">
-        <button type="button" class="btn greenBtn" id="snap">Tomar Foto</button>
-        <button type="button" class="btn redBtn" id="Camcancel">Cancelar</button>
-      </div>
-    </div>
-  </div>
-  <div id="CreditosModal" class="modal">
-      <div class="modal-content">
-          <h2>Cetys Universidad</h2>
-          <h2>Computación Movíl - Proyecto HTML5</h2>
-          <h3>Enrique Fernandez Castilla</h3>
-      </div>
-    </div>
-    <div id="empateModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="empateModalDismiss();">&times;</span>
-    <h1 style="color:white;padding: 70px 0;text-align: center;">Han empatado!</h1>
-        </div>
-      </div>
-  <div id="winnerModal" class="modal">
-    <div class="modal-content">
-      <span class="closewinnerModal close">&times;</span>
-      <img class="profilePicture" id="modalWinnerPicture" />
-      <p>Tenemos un Ganador!</p>
-      <p id="modalWinnerMessage">Tenemos un Ganador!</p>
-    </div>
-  </div>
-  <!-- #endregion -->
 </body>
-<script src="js/localStorage.js"></script>
-<script src="js/main.js"></script>
-<script src="js/game.js"></script>
-<script src="js/usersModal.js"></script>
-<script src="js/camera.js"></script>
-
+ 
+ 
+<script>
+function convertDate(d) {
+  var p = d.split("/");
+  return +(p[2]+p[1]+p[0]);
+}
+ 
+function sortByDate() {
+  var tbody = document.querySelector("#results tbody");
+  // get trs as array for ease of use
+  var rows = [].slice.call(tbody.querySelectorAll("tr"));
+ 
+  rows.sort(function(a,b) {
+    return convertDate(a.cells[0].innerHTML) - convertDate(b.cells[0].innerHTML);
+  });
+ 
+  rows.forEach(function(v) {
+    tbody.appendChild(v); // note that .appendChild() *moves* elements
+  });
+}
+ 
+    function dateToYMD(date) {
+        var d = date.getDate();
+        var m = date.getMonth() + 1; //Month from 0 to 11
+        var y = date.getFullYear();
+        return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+    }
+ 
+    function getClases(date) {
+        var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+ 
+        xhr.setRequestHeader("Authorization", "eyJraWQiOiJFOEtFU0UrV3Y5SUp2N24wU1RRRWE0d2pNZmh5QXFkbHo1N2krdjN3bTYwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2YzFjMDg2Ny0wN2UzLTQ3NmYtODY2Mi0yMTY2YmYxN2QyNmUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfOWczZ1p5VDVXIiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiNmMxYzA4NjctMDdlMy00NzZmLTg2NjItMjE2NmJmMTdkMjZlIiwiYXVkIjoiMmJkOGcxa3RrZzA3cThjcmdhZDVrdWI4NXIiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY0MTQyMTM5OCwibmFtZSI6IkVucmlxdWUgRmVybmFuZGV6ICIsInBob25lX251bWJlciI6IisrNTI2ODYyNzMyMTE1IiwiY3VzdG9tOnNjaGVtYSI6Im1vb3ZlX2luZG9vciIsImV4cCI6MTY0MTQyNDk5OCwiaWF0IjoxNjQxNDIxMzk4LCJlbWFpbCI6ImVucmlxdWVfZmVybmFuZGV6OTJAaG90bWFpbC5jb20ifQ.HGeLPG8Mdm0fMSGd9felgWxu_Ja8P6gyyH-15vsoeaGN5PQy1b13gFocU-Lrp4wLvW9pRFDZUlcxPm0xud8A6xIhRxy5J1HUGBmVVF3FCPlciXI8kTYX6OpDGYNLXRAgza4K3AWIsoJufs-LhMnW_D_wnpwcEsWhbMELF2Nfs_PlVgmNBuT76CPiv0jOhVQx6uhsFICALXoROwZgp_6ObpXK3a2VPyakog6ZCACb0v_Vk0oDC6Aa4Z7YVAFK5Cs18-z3Ol1AYpVjkzg-9jC2GkypfCXSEn5YxL0k3cNqrq_3zD9bA2Fbq3ZcBwNYtFH2HsutBdIVCRGG_q6soFH3aA");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        const urlParams = new URLSearchParams(window.location.search);
+        const coachid = urlParams.get('coachid');
+        xhr.onreadystatechange = function () {
+ 
+            if (xhr.readyState === 4) {
+                if (xhr.status === 401) {
+                    document.getElementById('tdata').innerHTML = '<tr><td>TOKEN EXPIRED</td></tr>';
+                }
+ 
+                const obj = JSON.parse(xhr.response);
+                var wanted = obj.lessons.filter(function (item) {
+                    if (coachid) {
+                        return (item.coach.id == coachid);
+                    } else {
+                        return true;
+                    }
+                });
+                wanted.forEach(x => {
+                    var trclass = '<tr  class="">';
+                    var activeClass = '';
+                    var classDate = x.start_at.split(" ")[0];
+                    var today = dateToYMD(new Date());
+                    console.log("classdate: " +classDate)
+                    console.log("today: " +today)
+                    if (today.split("-")[1] === classDate.split("-")[1] && today.split("-")[2] === classDate.split("-")[0]) {
+                        trclass = '<tr  class="active-row">';
+                    }
+                    let attendees = '';
+                    //x.assistants.forEach((element) => { attendees = attendees + element.name + '\\n' });
+                    attendees = 'onclick="alert(\'' + attendees + '\')"';
+                    if (x.available_capacity < 15) {
+                        activeClass = 'active-class';
+ 
+                    } else {
+                        attendees = '';
+                    }
+ 
+                    let row = trclass + '<td ><a href="?coachid=' + x.coach.id + '">' + x.coach.name + '</a></td><td id="date" class="centered-cell">' + x.start_at + '</td><td ' + attendees + '  class="centered-cell ' + activeClass + '">' + x.available_capacity + '</td></tr>';
+                    document.getElementById('tdata').innerHTML = document.getElementById('tdata').innerHTML + row;
+                });
+                sortByDate();
+            }
+        };
+        xhr.send();
+    }
+ 
+    var curr = new Date;
+ 
+ 
+        getClases(null);
+ 
+ 
+ 
+ 
+</script>
+<style>
+    html {
+ 
+        padding: 15px;
+        padding-top: 0px;
+ 
+    }
+ 
+    body {
+        max-width: 750px;
+        text-align: center;
+    }
+ 
+    html {
+        display: table;
+        margin: auto;
+    }
+ 
+    body {
+        display: table-cell;
+        vertical-align:middle;
+    }
+ 
+    a {
+        color: inherit;
+        /* blue colors for links too */
+        text-decoration: inherit;
+        /* no underline */
+    }
+ 
+    .styled-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 1.3em;
+        font-family: sans-serif;
+        min-width: 650px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+ 
+    .styled-table thead tr {
+        background-color: #070707;
+        color: #ffffff;
+        text-align: left;
+    }
+ 
+    .styled-table th,
+    .styled-table td {
+        padding: 12px 15px;
+    }
+ 
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+ 
+    .styled-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+ 
+    .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #980000;
+        border-radius: 25px;
+    }
+ 
+    .styled-table tbody tr.active-row {
+        font-weight: bold;
+        color: #01221b;
+        background-color: #5a5a5a1f;
+    }
+ 
+    .active-class {
+        font-weight: bolder;
+       
+        color: #c40f09;
+    }
+    .centered-cell{
+        text-align: center;
+    }
+</style>
+ 
 </html>
