@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,11 +11,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
         integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 </head>
- 
+
 <body>
-    <img src="https://atomboxcrm-images.s3.amazonaws.com/moove_indoor/moove_logo.png"/>
+    <img src="https://atomboxcrm-images.s3.amazonaws.com/moove_indoor/moove_logo.png" />
     <table class="table sortable styled-table" id="results">
-        <thead >
+        <thead>
             <tr>
                 <th class="centered-cell" scope="col"><a href="?all">Coach</a></th>
                 <th class="centered-cell" scope="col">Fecha</th>
@@ -23,70 +23,98 @@
             </tr>
         </thead>
         <tbody id='tdata'>
- 
+
         </tbody>
     </table>
 </body>
- 
- 
+
+
 <script>
-function convertDate(d) {
-  var p = d.split("/");
-  return +(p[2]+p[1]+p[0]);
-}
- 
-function sortByDate() {
-  var tbody = document.querySelector("#results tbody");
-  // get trs as array for ease of use
-  var rows = [].slice.call(tbody.querySelectorAll("tr"));
- 
-  rows.sort(function(a,b) {
-    return convertDate(a.cells[0].innerHTML) - convertDate(b.cells[0].innerHTML);
-  });
- 
-  rows.forEach(function(v) {
-    tbody.appendChild(v); // note that .appendChild() *moves* elements
-  });
-}
- 
+    function convertDate(d) {
+        var p = d.split("/");
+        return +(p[2] + p[1] + p[0]);
+    }
+
+    function sortByDate() {
+        var tbody = document.querySelector("#results tbody");
+        // get trs as array for ease of use
+        var rows = [].slice.call(tbody.querySelectorAll("tr"));
+
+        rows.sort(function (a, b) {
+            return convertDate(a.cells[0].innerHTML) - convertDate(b.cells[0].innerHTML);
+        });
+
+        rows.forEach(function (v) {
+            tbody.appendChild(v); // note that .appendChild() *moves* elements
+        });
+    }
+
     function dateToYMD(date) {
         var d = date.getDate();
         var m = date.getMonth() + 1; //Month from 0 to 11
         var y = date.getFullYear();
         return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
     }
- 
+    function dateFromServer(s) {
+        var year = s.split(" ")[0].split("-")[2];
+        var month = s.split(" ")[0].split("-")[1];
+        var day = s.split(" ")[0].split("-")[0];
+        var hour = s.split(" ")[1].split(":")[0];
+        var minutes = s.split(" ")[1].split(":")[1];
+        var date = new Date(year, month, day, hour, minutes);
+        return date;
+    }
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    function to12format(t) {
+        var hour = t.split(":")[0];
+        if (hour > 12) {
+            return (hour - 12) + ' pm';
+        } else {
+            return hour + ' am';
+        }
+    }
+    function spanishDate(date) {
+        var event = date;
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+        console.log(event.toLocaleDateString('es-ES', options));
+        var d = event.toLocaleDateString('es-ES', options).split(" ");
+        return capitalizeFirstLetter(d[0].replace(",", "")) + ' ' + d[1] + ' <h5>' + to12format(d[6]) + '</h5>';
+
+    }
     function getClases(date) {
-        var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
+        var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor&start_date=2022-04-30";
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
- 
-        xhr.setRequestHeader("Authorization", "eyJraWQiOiJFOEtFU0UrV3Y5SUp2N24wU1RRRWE0d2pNZmh5QXFkbHo1N2krdjN3bTYwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2YzFjMDg2Ny0wN2UzLTQ3NmYtODY2Mi0yMTY2YmYxN2QyNmUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfOWczZ1p5VDVXIiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiNmMxYzA4NjctMDdlMy00NzZmLTg2NjItMjE2NmJmMTdkMjZlIiwiYXVkIjoiMmJkOGcxa3RrZzA3cThjcmdhZDVrdWI4NXIiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY0MTQyMTM5OCwibmFtZSI6IkVucmlxdWUgRmVybmFuZGV6ICIsInBob25lX251bWJlciI6IisrNTI2ODYyNzMyMTE1IiwiY3VzdG9tOnNjaGVtYSI6Im1vb3ZlX2luZG9vciIsImV4cCI6MTY0MTQyNDk5OCwiaWF0IjoxNjQxNDIxMzk4LCJlbWFpbCI6ImVucmlxdWVfZmVybmFuZGV6OTJAaG90bWFpbC5jb20ifQ.HGeLPG8Mdm0fMSGd9felgWxu_Ja8P6gyyH-15vsoeaGN5PQy1b13gFocU-Lrp4wLvW9pRFDZUlcxPm0xud8A6xIhRxy5J1HUGBmVVF3FCPlciXI8kTYX6OpDGYNLXRAgza4K3AWIsoJufs-LhMnW_D_wnpwcEsWhbMELF2Nfs_PlVgmNBuT76CPiv0jOhVQx6uhsFICALXoROwZgp_6ObpXK3a2VPyakog6ZCACb0v_Vk0oDC6Aa4Z7YVAFK5Cs18-z3Ol1AYpVjkzg-9jC2GkypfCXSEn5YxL0k3cNqrq_3zD9bA2Fbq3ZcBwNYtFH2HsutBdIVCRGG_q6soFH3aA");
+
+        xhr.setRequestHeader("Authorization", "eyJraWQiOiJFOEtFU0UrV3Y5SUp2N24wU1RRRWE0d2pNZmh5QXFkbHo1N2krdjN3bTYwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNTc5OTA5OS1kMmRhLTQyMjAtYWM1MS00YjVlNjgyZTZlOWMiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfOWczZ1p5VDVXIiwiY29nbml0bzp1c2VybmFtZSI6ImM1Nzk5MDk5LWQyZGEtNDIyMC1hYzUxLTRiNWU2ODJlNmU5YyIsImF1ZCI6IjJiZDhnMWt0a2cwN3E4Y3JnYWQ1a3ViODVyIiwiZXZlbnRfaWQiOiIxNWIxNGU3MS01MTY3LTRhZGQtOWJjOC1hN2M5NmQ5N2I5MmQiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY1MTA3MjgyNywibmFtZSI6IkRJQU5BIEdBUkNJQSIsImN1c3RvbTpzY2hlbWEiOiJtb292ZV9pbmRvb3IiLCJleHAiOjE2NTEwNzY0MjksImlhdCI6MTY1MTA3MjgyOSwiZW1haWwiOiJtb292ZWluZG9vcmN5Y2xpbmdAZ21haWwuY29tIn0.HNkilxgZa6INViLzi1cZBt4luQ9fBfwWY3ZacHQDzysQduQUU2R2MshxjU7Nhc2eOueqhAoZnFM3HbugVvJumldTmV2ylXdaSkCGRbrYsNThnKFcyyPD9ct66EwLncvWq89rmt7qPJsrLYHtFimR1TP6ctMNQWaWXOrjX3y_kJNBiY2_RcoJSMMPhRTPpnNFtPhdSkzsxMjQmAe5Jz0h20HrcQFofUVtrPt0ogfx1opUEtvkuuShTZPmdGc0II0YqRp-p4xNVeRjHWOIp7IN8GWZ7T8_YIoFgt50EeIB4IIroJsuLU1l46IXQk9bgenwe_AxI_ANJZrGuWE2e8RwsA");
         xhr.setRequestHeader("Content-Type", "application/json");
         const urlParams = new URLSearchParams(window.location.search);
         const coachid = urlParams.get('coachid');
         xhr.onreadystatechange = function () {
- 
+
             if (xhr.readyState === 4) {
                 if (xhr.status === 401) {
                     document.getElementById('tdata').innerHTML = '<tr><td>TOKEN EXPIRED</td></tr>';
                 }
- 
+
                 const obj = JSON.parse(xhr.response);
                 var wanted = obj.lessons.filter(function (item) {
+
                     if (coachid) {
                         return (item.coach.id == coachid);
                     } else {
                         return true;
                     }
                 });
+
                 wanted.forEach(x => {
+
                     var trclass = '<tr  class="">';
-                    var activeClass = '';
+                    var activeClass = 'disponibilidad ';
                     var classDate = x.start_at.split(" ")[0];
                     var today = dateToYMD(new Date());
-                    console.log("classdate: " +classDate)
-                    console.log("today: " +today)
                     if (today.split("-")[1] === classDate.split("-")[1] && today.split("-")[2] === classDate.split("-")[0]) {
                         trclass = '<tr  class="active-row">';
                     }
@@ -94,60 +122,87 @@ function sortByDate() {
                     //x.assistants.forEach((element) => { attendees = attendees + element.name + '\\n' });
                     attendees = 'onclick="alert(\'' + attendees + '\')"';
                     if (x.available_capacity < 15) {
-                        activeClass = 'active-class';
- 
+                        activeClass = 'disponibilidad active-class';
+
                     } else {
                         attendees = '';
                     }
- 
-                    let row = trclass + '<td ><a href="?coachid=' + x.coach.id + '">' + x.coach.name + '</a></td><td id="date" class="centered-cell">' + x.start_at + '</td><td ' + attendees + '  class="centered-cell ' + activeClass + '">' + x.available_capacity + '</td></tr>';
+
+                    let row = trclass + '<td >' +
+                        '<div><img id="coach-img" src="img/coaches/'+x.coach.name.replace(" ","")+'.jpg"/></div>' +
+                        '<div class="coachname"><a href="?coachid=' + x.coach.id + '"></div>' + x.coach.name + '</a>' +
+                        '</td><td id="date" class="centered-cell">' + spanishDate(dateFromServer(x.start_at)) + '</td><td ' + attendees + '  class="centered-cell ' + activeClass + '">' + x.available_capacity + '</td></tr>';
                     document.getElementById('tdata').innerHTML = document.getElementById('tdata').innerHTML + row;
+
+
                 });
                 sortByDate();
             }
         };
         xhr.send();
     }
- 
+
     var curr = new Date;
- 
- 
-        getClases(null);
- 
- 
- 
- 
+
+
+    getClases(null);
+
+
+
+
 </script>
 <style>
     html {
- 
+
         padding: 15px;
         padding-top: 0px;
- 
+
     }
- 
+
+    #coach-img {
+        vertical-align: middle;
+        border-style: none;
+        border-radius: 50%;
+        max-width: 50px;
+        color: white;
+        box-shadow: 0 0 6px #6a6262;
+    }
+
+    .coachname {
+        padding-top: 8px;
+    }
+
     body {
         max-width: 750px;
         text-align: center;
     }
- 
+
+    .disponibilidad {
+        font-size: large;
+    }
+
+    h5 {
+        font-size: .8rem;
+        font-weight: bolder;
+    }
+
     html {
         display: table;
         margin: auto;
     }
- 
+
     body {
         display: table-cell;
-        vertical-align:middle;
+        vertical-align: middle;
     }
- 
+
     a {
         color: inherit;
         /* blue colors for links too */
         text-decoration: inherit;
         /* no underline */
     }
- 
+
     .styled-table {
         border-collapse: collapse;
         margin: 25px 0;
@@ -158,45 +213,46 @@ function sortByDate() {
         border-radius: 10px;
         overflow: hidden;
     }
- 
+
     .styled-table thead tr {
         background-color: #070707;
         color: #ffffff;
         text-align: left;
     }
- 
+
     .styled-table th,
     .styled-table td {
         padding: 12px 15px;
+        vertical-align: middle;
     }
- 
+
     .styled-table tbody tr {
         border-bottom: 1px solid #dddddd;
     }
- 
+
     .styled-table tbody tr:nth-of-type(even) {
         background-color: #f3f3f3;
     }
- 
+
     .styled-table tbody tr:last-of-type {
-        border-bottom: 2px solid #980000;
+        border-bottom: 2px solid #009879;
         border-radius: 25px;
     }
- 
+
     .styled-table tbody tr.active-row {
         font-weight: bold;
         color: #01221b;
         background-color: #e41e2757;
     }
- 
+
     .active-class {
-        font-weight: bolder;
-       
+        font-weight: bold;
         color: #c40f09;
     }
-    .centered-cell{
+
+    .centered-cell {
         text-align: center;
     }
 </style>
- 
+
 </html>
