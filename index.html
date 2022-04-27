@@ -19,7 +19,7 @@
             <tr>
                 <th class="centered-cell" scope="col"><a href="?all">Coach</a></th>
                 <th class="centered-cell" scope="col">Fecha</th>
-                <th class="centered-cell" scope="col">Disponibilidad</th>
+                <th class="centered-cell" scope="col">Registrados</th>
             </tr>
         </thead>
         <tbody id='tdata'>
@@ -78,7 +78,6 @@
     function spanishDate(date) {
         var event = date;
         var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-        console.log(event.toLocaleDateString('es-ES', options));
         var d = event.toLocaleDateString('es-ES', options).split(" ");
         return capitalizeFirstLetter(d[0].replace(",", "")) + ' ' + d[1] + ' <h5>' + to12format(d[6]) + '</h5>';
 
@@ -115,11 +114,13 @@
                     var activeClass = 'disponibilidad ';
                     var classDate = x.start_at.split(" ")[0];
                     var today = dateToYMD(new Date());
+
                     if (today.split("-")[1] === classDate.split("-")[1] && today.split("-")[2] === classDate.split("-")[0]) {
                         trclass = '<tr  class="active-row">';
                     }
                     let attendees = '';
                     //x.assistants.forEach((element) => { attendees = attendees + element.name + '\\n' });
+                    attendees= 'LISTA DE USUARIOS REGISTRADOS A LA CLASE ';
                     attendees = 'onclick="alert(\'' + attendees + '\')"';
                     if (x.available_capacity < 15) {
                         activeClass = 'disponibilidad active-class';
@@ -131,7 +132,7 @@
                     let row = trclass + '<td >' +
                         '<div><img id="coach-img" src="img/coaches/'+x.coach.name.replace(" ","")+'.jpg"/></div>' +
                         '<div class="coachname"><a href="?coachid=' + x.coach.id + '"></div>' + x.coach.name + '</a>' +
-                        '</td><td id="date" class="centered-cell">' + spanishDate(dateFromServer(x.start_at)) + '</td><td ' + attendees + '  class="centered-cell ' + activeClass + '">' + x.available_capacity + '</td></tr>';
+                        '</td><td id="date" class="centered-cell">' + spanishDate(dateFromServer(x.start_at)) + '</td><td ' + attendees + '  class="centered-cell ' + activeClass + '">' + (x.capacity - x.available_capacity) + '</td></tr>';
                     document.getElementById('tdata').innerHTML = document.getElementById('tdata').innerHTML + row;
 
 
