@@ -128,6 +128,9 @@
                     } else {
                         attendees = '';
                     }
+                    if(new Date () > dateFromServer(x.start_at)){
+                        return;
+                    }
                     let row = trclass + '<td >' +
                         '<div><img id="coach-img" src="img/coaches/'+x.coach.name.replace(" ","")+'.jpg"/></div>' +
                         '<div class="coachname"><a href="?coachid=' + x.coach.id + '"></div>' + x.coach.name + '</a>' +
