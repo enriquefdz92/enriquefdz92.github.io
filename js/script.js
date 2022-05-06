@@ -42,9 +42,10 @@ function getClases() {
     var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
     const urlParams = new URLSearchParams(window.location.search);
     const coachid = urlParams.get('coachid');
-    if(coachid){
+    const showAll = urlParams.get('show');
+
         url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor&start="+  getMonday()+"&end=" + getSunday(new Date());
-    }
+
     console.log(url);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
@@ -61,7 +62,10 @@ function getClases() {
             console.log(today.toLocaleString('en-US', { hour12: true }));
             const obj = JSON.parse(xhr.response);
             var wanted = obj.lessons.filter(function (item) {
-
+                if(showAll){
+                    console.log("showing all");
+                    return true;
+                }
                 if (coachid) {
                     return (item.coach.id == coachid);
                 } else {
