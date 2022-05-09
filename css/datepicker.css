@@ -1,0 +1,47 @@
+.well {
+    margin-top: 20px;
+  }
+  
+  .date-range {
+    margin: auto;
+    text-align: center;
+  }
+  
+  .date-range > div {
+    display: inline-block;
+    margin: 10px;
+  }
+  
+  
+  .is-selected {
+    background-color: #286090;
+    color: white;
+  }
+  
+  .is-selected:hover {
+    background-color: #204d74 !important;
+  }
+  
+  .is-between {
+    border-radius: 0 !important;
+    background-color: #5599d4;
+    color: white;
+  }
+  
+  .is-between:hover {
+    background-color: #204d74 !important;
+  }
+  
+  .checkin-picker .active,
+  .checkout-picker .is-selected {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .checkout-picker .active,
+  .checkin-picker .is-selected {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+ 
