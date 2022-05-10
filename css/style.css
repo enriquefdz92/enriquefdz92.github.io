@@ -51,7 +51,6 @@ a {
 
 .styled-table {
     border-collapse: collapse;
-    margin: 25px 0;
     font-size: .7em;
     font-family: sans-serif;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
@@ -99,6 +98,8 @@ a {
 .centered-cell {
     text-align: center;
 }
-
+.hiddenRow {
+    padding: 0 !important;
+}
 
 

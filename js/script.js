@@ -32,14 +32,20 @@ function spanishDate(date) {
         minute: 'numeric'
     };
     var d = event.toLocaleDateString('es-ES', options).split(" ");
-    return capitalizeFirstLetter(d[0].replace(",", "")) + ' ' + d[1] + ' <h5>' + to12format(d[6]) + '</h5>';
+    return capitalizeFirstLetter(d[0].replace(",", "")) + ' ' + d[1] + '<h5>' + to12format(d[6]) + '</h5>';
 
+}
+
+function getWeek(currentdate) {
+    var oneJan = new Date(currentdate.getFullYear(), 0, 1);
+    var numberOfDays = Math.floor((currentdate - oneJan) / (24 * 60 * 60 * 1000));
+    return Math.ceil((currentdate.getDay() + 1 + numberOfDays) / 7);
 }
 
 function getMonday() {
     d = new Date();
     var day = d.getDay(),
-        diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+        diff = d.getDate() - day ;//+ (day == 0 ? -6 : 1); // adjust when day is sunday
     return (new Date(d.setDate(diff))).toISOString().split('T')[0];
 }
 
@@ -49,6 +55,22 @@ function getSunday() {
     result.setDate(result.getDate() + 6);
 
     return (new Date(result)).toISOString().split('T')[0];
+}
+
+function gettr(classID) {
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.colSpan=3;
+    td.classList.add('hiddenRow');
+    var accordianDiv = document.createElement('div');
+    accordianDiv.classList.add('accordian-body');
+    accordianDiv.classList.add('collapse');
+    accordianDiv.id="lista"+classID;
+    accordianDiv.innerHTML="Lista de usuarios registrados";
+    td.appendChild(accordianDiv);
+    tr.appendChild(td);
+    return tr;
+
 }
 
 function getClases(start, end) {
@@ -77,67 +99,80 @@ function getClases(start, end) {
             }));
             const obj = JSON.parse(xhr.response);
             var wanted = obj.lessons.filter(function (item) {
+                var currentweek = getWeek(new Date());
+                var classweek = getWeek(dateFromServer(item.start_at));
                 if (showAll) {
                     console.log("showing all");
                     return true;
+                } else {
+                    if (new Date() > dateFromServer(item.start_at)) {
+                        return false;
+                    }
+                    /*    if (currentweek != classweek) {
+                           console.log(currentweek + " > "+ classweek);
+                           console.log(item);
+                           
+                           console.log(dateFromServer(item.start_at));
+                           console.log('skipping');
+                           return false;
+                       } */
                 }
                 if (coachid) {
                     return (item.coach.id == coachid);
                 } else {
-                    var endDate = new Date(end);
-                    endDate.setDate(endDate.getDate() +1);
-
-                    var startDate = new Date(start);
-                    startDate.setDate(startDate.getDate() +1);
-console.log(dateFromServer(item.start_at));
-console.log(end);
-console.log(endDate);
-                    if (dateFromServer(item.start_at) <= endDate ){ 
-                        return true;
-                    }else{
-                        return false;
-                    }
-
-                    if (new Date() > dateFromServer(item.start_at)) {
-                        return false;
-                    }
-
                     return true;
                 }
             });
-            //console.log(wanted);
             if (wanted.length == 0) {
                 $("#noelements").show();
             }
             wanted.forEach(x => {
-                var activeClass = x.available_capacity < 15 ? ' active-class' : '';
                 var classDate = dateFromServer(x.start_at);
-                let attendees = '';
-                //x.assistants.forEach((element) => { attendees = attendees + element.name + '\\n' });
-                attendees = 'LISTA DE USUARIOS REGISTRADOS A LA CLASE ';
-                attendees = 'onclick="alert(\'' + attendees + '\')"';
 
-                var trclass = today.setHours(0, 0, 0, 0) === classDate.setHours(0, 0, 0, 0) ? '<tr class="active-row classRow">' : '<tr  class="classRow">';
-                let row = trclass +
-                    '<td>' +
-                    '<a href="?coachid=' + x.coach.id + '">' +
-                    '<div>' +
-                    '<img id="coach-img" src="img/coaches/' + x.coach.name.replace(" ", "") + '.jpg"/>' +
-                    '</div>' +
-                    '<div class="coachname">' +
-                    x.coach.name +
-                    '</div>' +
-                    '</a>' +
-                    '</td>' +
-                    '<td id="date">' +
-                    spanishDate(dateFromServer(x.start_at)) +
-                    '</td>' +
-                    '<td ' + attendees + '  class="disponibilidad ' + activeClass + '">' +
-                    (15 - x.available_capacity) +
-                    '</td>' +
-                    '</tr>';
+                var tr = document.createElement('tr');
+                tr.classList.add("classRow");
+                tr.classList.add('accordion-toggle');
+                tr.dataset.toggle = 'collapse';
+                tr.dataset.target ='#lista'+x.id;
+                if (today.setHours(0, 0, 0, 0) === classDate.setHours(0, 0, 0, 0)) {
+                    tr.classList.add("active-row");
+                }
 
-                document.getElementById('tdata').innerHTML = document.getElementById('tdata').innerHTML + row;
+                var tdCoach = document.createElement('td');
+                var a = document.createElement('a'); 
+                a.href = "?coachid=" + x.coach.id;
+                var foto = document.createElement('img'); 
+                foto.id = "coach-img";
+                foto.src = "img/coaches/" + x.coach.name.replace(" ", "") + ".jpg";
+                var fotoDiv = document.createElement('div');
+                fotoDiv.appendChild(foto);
+                var nombre = document.createElement('div');
+                nombre.classList.add('coachname');
+                nombre.innerHTML= x.coach.name;
+
+                a.appendChild(foto);
+                a.appendChild(fotoDiv)
+                a.appendChild(nombre);
+                tdCoach.appendChild(a);
+
+                var tdFecha = document.createElement('td');
+                tdFecha.id="date";
+                tdFecha.innerHTML=  spanishDate(dateFromServer(x.start_at));
+
+                var tdRegistrados = document.createElement('td');
+                tdRegistrados.classList.add("disponibilidad");
+                if(x.available_capacity < 15){
+                    tdRegistrados.classList.add("active-class");
+                }
+                tdRegistrados.innerHTML= 15 - x.available_capacity;
+                tr.appendChild(tdCoach);
+                tr.appendChild(tdFecha);
+                tr.appendChild(tdRegistrados);
+                
+                //console.log(tr);
+                document.getElementById('tdata').appendChild(tr);
+                document.getElementById('tdata').appendChild(gettr(x.id));
+
 
             });
         }
@@ -145,4 +180,4 @@ console.log(endDate);
     xhr.send();
 }
 
-getClases(getMonday(),getSunday(new Date()));
+getClases(getMonday(), getSunday(new Date()));
