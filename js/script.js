@@ -64,20 +64,20 @@ function getUsersList(classID, usersQty) {
     li.classList.add('list-group-item');
     li.classList.add('list-group-flush');
     li.classList.add('list-group-item-success');
-    li.innerHTML="Asistentes";
+    li.innerHTML = "Asistentes";
     ul.appendChild(li);
     for (let i = 0; i < usersQty; i++) {
         var li = document.createElement('li');
         li.classList.add('list-group-item');
-        
-        
+
+
         var img = document.createElement('img');
-        img.src ="https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png";
+        img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png";
         img.classList.add('assistant-img');
-        var DivImg= document.createElement('div');
+        var DivImg = document.createElement('div');
         DivImg.appendChild(img);
-        var DivName= document.createElement('div');
-        DivName.innerHTML= 'Nombre de Usuario';
+        var DivName = document.createElement('div');
+        DivName.innerHTML = 'Nombre de Usuario';
 
         var container = document.createElement('div');
         container.classList.add('container');
@@ -115,7 +115,7 @@ function getUsersList(classID, usersQty) {
     return tr;
 }
 
-function getClases(start, end) {
+function getClases(start, end, authKey) {
     $('#tdata').find('tr.classRow').remove();
     var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
     const urlParams = new URLSearchParams(window.location.search);
@@ -127,7 +127,7 @@ function getClases(start, end) {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
 
-    xhr.setRequestHeader("Authorization", "eyJraWQiOiJFOEtFU0UrV3Y5SUp2N24wU1RRRWE0d2pNZmh5QXFkbHo1N2krdjN3bTYwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNTc5OTA5OS1kMmRhLTQyMjAtYWM1MS00YjVlNjgyZTZlOWMiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfOWczZ1p5VDVXIiwiY29nbml0bzp1c2VybmFtZSI6ImM1Nzk5MDk5LWQyZGEtNDIyMC1hYzUxLTRiNWU2ODJlNmU5YyIsImF1ZCI6IjJiZDhnMWt0a2cwN3E4Y3JnYWQ1a3ViODVyIiwiZXZlbnRfaWQiOiIxNWIxNGU3MS01MTY3LTRhZGQtOWJjOC1hN2M5NmQ5N2I5MmQiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTY1MTA3MjgyNywibmFtZSI6IkRJQU5BIEdBUkNJQSIsImN1c3RvbTpzY2hlbWEiOiJtb292ZV9pbmRvb3IiLCJleHAiOjE2NTEwNzY0MjksImlhdCI6MTY1MTA3MjgyOSwiZW1haWwiOiJtb292ZWluZG9vcmN5Y2xpbmdAZ21haWwuY29tIn0.HNkilxgZa6INViLzi1cZBt4luQ9fBfwWY3ZacHQDzysQduQUU2R2MshxjU7Nhc2eOueqhAoZnFM3HbugVvJumldTmV2ylXdaSkCGRbrYsNThnKFcyyPD9ct66EwLncvWq89rmt7qPJsrLYHtFimR1TP6ctMNQWaWXOrjX3y_kJNBiY2_RcoJSMMPhRTPpnNFtPhdSkzsxMjQmAe5Jz0h20HrcQFofUVtrPt0ogfx1opUEtvkuuShTZPmdGc0II0YqRp-p4xNVeRjHWOIp7IN8GWZ7T8_YIoFgt50EeIB4IIroJsuLU1l46IXQk9bgenwe_AxI_ANJZrGuWE2e8RwsA");
+    xhr.setRequestHeader("Authorization", authKey);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
         $("#loader").hide();
@@ -266,8 +266,8 @@ function createDataTable(data) {
     data.forEach(x => {
         console.log(x.available_capacity);
         tbody.appendChild(dataRow(x));
-        if(15-x.available_capacity > 0){
-            tbody.appendChild(getUsersList(x.id,15-x.available_capacity));
+        if (15 - x.available_capacity > 0) {
+            tbody.appendChild(getUsersList(x.id, 15 - x.available_capacity));
         }
     });
     table.appendChild(tbody);
@@ -307,4 +307,21 @@ function createNewCard(id, Htitle, bodyContent) {
     card.appendChild(cardColapse);
     return card;
 }
-getClases(getMonday(), getSunday(new Date()));
+
+
+function readTextFile(file) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file);
+    rawFile.onreadystatechange = function () {
+        if (rawFile.readyState === 4) {
+            if (rawFile.status === 200 || rawFile.status == 0) {
+                var authKey = rawFile.responseText;
+                console.log(authKey);
+                getClases(getMonday(), getSunday(new Date()), authKey);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
+readTextFile("https://enriquefdz92.github.io/js/key.txt");
