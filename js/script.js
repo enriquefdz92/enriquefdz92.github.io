@@ -45,7 +45,7 @@ function getWeek(currentdate) {
 function getMonday() {
     d = new Date();
     var day = d.getDay(),
-        diff = d.getDate() - day ;//+ (day == 0 ? -6 : 1); // adjust when day is sunday
+        diff = d.getDate() - day; //+ (day == 0 ? -6 : 1); // adjust when day is sunday
     return (new Date(d.setDate(diff))).toISOString().split('T')[0];
 }
 
@@ -57,20 +57,62 @@ function getSunday() {
     return (new Date(result)).toISOString().split('T')[0];
 }
 
-function gettr(classID) {
+function getUsersList(classID, usersQty) {
+    var ul = document.createElement('ul');
+    var li = document.createElement('li');
+    ul.classList.add('list-group');
+    li.classList.add('list-group-item');
+    li.classList.add('list-group-flush');
+    li.classList.add('list-group-item-success');
+    li.innerHTML="Asistentes";
+    ul.appendChild(li);
+    for (let i = 0; i < usersQty; i++) {
+        var li = document.createElement('li');
+        li.classList.add('list-group-item');
+        
+        
+        var img = document.createElement('img');
+        img.src ="https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png";
+        img.classList.add('assistant-img');
+        var DivImg= document.createElement('div');
+        DivImg.appendChild(img);
+        var DivName= document.createElement('div');
+        DivName.innerHTML= 'Nombre de Usuario';
+
+        var container = document.createElement('div');
+        container.classList.add('container');
+        var row = document.createElement('div');
+        row.classList.add('row');
+        var col2 = document.createElement('div');
+        col2.classList.add('col-2');
+        col2.appendChild(img);
+        var col10 = document.createElement('div');
+        col10.classList.add('col-10');
+        col10.classList.add('list-assistant');
+        col10.appendChild(DivName);
+        row.appendChild(col2);
+        row.appendChild(col10);
+        container.appendChild(row);
+        li.appendChild(container);
+
+        ul.appendChild(li);
+    }
+
+
+
     var tr = document.createElement('tr');
     var td = document.createElement('td');
-    td.colSpan=3;
+    td.colSpan = 3;
     td.classList.add('hiddenRow');
+    var accordianDiv = document.createElement('div');
     var accordianDiv = document.createElement('div');
     accordianDiv.classList.add('accordian-body');
     accordianDiv.classList.add('collapse');
-    accordianDiv.id="lista"+classID;
-    accordianDiv.innerHTML="Lista de usuarios registrados";
+    accordianDiv.id = "lista" + classID;
+    accordianDiv.appendChild(ul);
     td.appendChild(accordianDiv);
     tr.appendChild(td);
     return tr;
-
 }
 
 function getClases(start, end) {
@@ -94,9 +136,7 @@ function getClases(start, end) {
                 document.getElementById('tdata').innerHTML = '<tr><td>TOKEN EXPIRED</td></tr>';
             }
             var today = new Date();
-            console.log(today.toLocaleString('en-US', {
-                hour12: true
-            }));
+            //console.log(today.toLocaleString('en-US', { hour12: true}));
             const obj = JSON.parse(xhr.response);
             var wanted = obj.lessons.filter(function (item) {
                 var currentweek = getWeek(new Date());
@@ -126,58 +166,145 @@ function getClases(start, end) {
             if (wanted.length == 0) {
                 $("#noelements").show();
             }
+            var tempDate = '';
+
+            var card;
+
+            var classes = [];
             wanted.forEach(x => {
-                var classDate = dateFromServer(x.start_at);
-
-                var tr = document.createElement('tr');
-                tr.classList.add("classRow");
-                tr.classList.add('accordion-toggle');
-                tr.dataset.toggle = 'collapse';
-                tr.dataset.target ='#lista'+x.id;
-                if (today.setHours(0, 0, 0, 0) === classDate.setHours(0, 0, 0, 0)) {
-                    tr.classList.add("active-row");
+                var sDate = spanishDate(dateFromServer(x.start_at)).split('<')[0];
+                if (tempDate != sDate) {
+                    tempDate = sDate;
+                    if (tempDate != '') {
+                        classes.push(sDate);
+                    }
                 }
-
-                var tdCoach = document.createElement('td');
-                var a = document.createElement('a'); 
-                a.href = "?coachid=" + x.coach.id;
-                var foto = document.createElement('img'); 
-                foto.id = "coach-img";
-                foto.src = "img/coaches/" + x.coach.name.replace(" ", "") + ".jpg";
-                var fotoDiv = document.createElement('div');
-                fotoDiv.appendChild(foto);
-                var nombre = document.createElement('div');
-                nombre.classList.add('coachname');
-                nombre.innerHTML= x.coach.name;
-
-                a.appendChild(foto);
-                a.appendChild(fotoDiv)
-                a.appendChild(nombre);
-                tdCoach.appendChild(a);
-
-                var tdFecha = document.createElement('td');
-                tdFecha.id="date";
-                tdFecha.innerHTML=  spanishDate(dateFromServer(x.start_at));
-
-                var tdRegistrados = document.createElement('td');
-                tdRegistrados.classList.add("disponibilidad");
-                if(x.available_capacity < 15){
-                    tdRegistrados.classList.add("active-class");
-                }
-                tdRegistrados.innerHTML= 15 - x.available_capacity;
-                tr.appendChild(tdCoach);
-                tr.appendChild(tdFecha);
-                tr.appendChild(tdRegistrados);
-                
-                //console.log(tr);
-                document.getElementById('tdata').appendChild(tr);
-                document.getElementById('tdata').appendChild(gettr(x.id));
-
-
             });
+            classes.forEach(cardDate => {
+                var clasesPorFecha = wanted.filter(x => spanishDate(dateFromServer(x.start_at)).startsWith(cardDate));
+                let value3 = Math.floor(Math.random() * 100);
+                var dataTable = createDataTable(clasesPorFecha);
+                card = createNewCard(value3, cardDate, dataTable);
+                document.getElementById('accordion').appendChild(card);
+            });
+            document.querySelector(".class-collapse").classList.add('show');
         }
     };
     xhr.send();
 }
 
+function dataRow(x) {
+    var today = new Date();
+    var classDate = dateFromServer(x.start_at);
+    var tr = document.createElement('tr');
+    tr.classList.add("classRow");
+    tr.classList.add('accordion-toggle');
+    tr.dataset.toggle = 'collapse';
+    tr.dataset.target = '#lista' + x.id;
+    if (today.setHours(0, 0, 0, 0) === classDate.setHours(0, 0, 0, 0)) {
+        tr.classList.add("active-row");
+    }
+
+    var tdCoach = document.createElement('td');
+    var a = document.createElement('a');
+    a.href = "?coachid=" + x.coach.id;
+    var foto = document.createElement('img');
+    foto.id = "coach-img";
+    foto.src = "img/coaches/" + x.coach.name.replace(" ", "") + ".jpg";
+    var fotoDiv = document.createElement('div');
+    fotoDiv.appendChild(foto);
+    var nombre = document.createElement('div');
+    nombre.classList.add('coachname');
+    nombre.innerHTML = x.coach.name;
+
+    a.appendChild(foto);
+    a.appendChild(fotoDiv)
+    a.appendChild(nombre);
+    tdCoach.appendChild(a);
+
+    var tdFecha = document.createElement('td');
+    tdFecha.id = "date";
+    tdFecha.innerHTML = spanishDate(dateFromServer(x.start_at));
+
+    var tdRegistrados = document.createElement('td');
+    tdRegistrados.classList.add("disponibilidad");
+    if (x.available_capacity < 15) {
+        tdRegistrados.classList.add("active-class");
+    }
+    tdRegistrados.innerHTML = 15 - x.available_capacity;
+    tr.appendChild(tdCoach);
+    tr.appendChild(tdFecha);
+    tr.appendChild(tdRegistrados);
+    return tr;
+}
+
+function createDataTable(data) {
+    var table = document.createElement('table');
+    table.classList.add("table");
+    table.classList.add("table-responsive");
+    table.classList.add("sortable");
+    table.classList.add("styled-table");
+    table.classList.add("centered-cell");
+    var thead = document.createElement('thead');
+    var Htr = document.createElement('tr');
+    var Hth1 = document.createElement('th');
+    var Hth2 = document.createElement('th');
+    var Hth3 = document.createElement('th');
+    Hth1.classList.add("centered-cell");
+    Hth1.innerHTML = "<a href=\"?all\">Coach</a>";
+    Htr.appendChild(Hth1);
+    Hth2.classList.add("centered-cell");
+    Hth2.innerHTML = "<a href=\"?show='all'\">Fecha</a>";
+    Htr.appendChild(Hth2);
+    Hth3.classList.add("centered-cell");
+    Hth3.innerHTML = "<a href=\"#\">Registrados</a>";
+    Htr.appendChild(Hth3);
+    thead.appendChild(Htr);
+    table.appendChild(thead)
+    var tbody = document.createElement('tbody');
+
+    data.forEach(x => {
+        console.log(x.available_capacity);
+        tbody.appendChild(dataRow(x));
+        if(15-x.available_capacity > 0){
+            tbody.appendChild(getUsersList(x.id,15-x.available_capacity));
+        }
+    });
+    table.appendChild(tbody);
+
+
+    return table;
+}
+
+function createNewCard(id, Htitle, bodyContent) {
+    var card = document.createElement('div');
+    card.classList.add('card');
+    var cardHeader = document.createElement('div');
+    cardHeader.id = 'heading' + id;
+    cardHeader.classList.add('card-header');
+    var title = document.createElement('h5');
+    title.classList.add('mb-0');
+    var button = document.createElement('button');
+    button.classList.add('btn');
+    button.dataset.toggle = 'collapse';
+    button.dataset.target = '#collapse' + id;
+    button.ariaExpanded = 'true';
+    button.ariaControls = 'collapse' + id;
+    button.innerHTML = Htitle;
+    title.appendChild(button);
+    cardHeader.appendChild(title);
+    var cardColapse = document.createElement('div');
+    cardColapse.id = 'collapse' + id;
+    cardColapse.classList.add('collapse');
+    cardColapse.classList.add('class-collapse');
+    cardColapse.ariaLabeledby = 'heading' + id;
+    cardColapse.dataset.parent = '#accordion';
+    var cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
+    cardBody.appendChild(bodyContent);
+    cardColapse.appendChild(cardBody);
+    card.appendChild(cardHeader);
+    card.appendChild(cardColapse);
+    return card;
+}
 getClases(getMonday(), getSunday(new Date()));

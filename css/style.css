@@ -1,105 +1,112 @@
 html {
-
-    padding: 15px;
-    padding-top: 0px;
-
+  padding: 15px;
+  padding-top: 0px;
 }
 
 #coach-img {
-    vertical-align: middle;
-    border-style: none;
-    border-radius: 50%;
-    max-width: 50px;
-    color: white;
-    box-shadow: 0 0 6px #6a6262;
+  vertical-align: middle;
+  border-style: none;
+  border-radius: 50%;
+  max-width: 50px;
+  color: white;
+  box-shadow: 0 0 6px #6a6262;
 }
 
 .coachname {
-    padding-top: 8px;
+  padding-top: 8px;
 }
 
 body {
-    max-width: 750px;
-    text-align: center;
+  max-width: 750px;
+  text-align: center;
 }
 
 .disponibilidad {
-    font-size: large;
+  font-size: large;
 }
 
 h5 {
-    font-size: .8rem;
-    font-weight: bolder;
+  font-size: 0.8rem;
+  font-weight: bolder;
 }
 
 html {
-    display: table;
-    margin: auto;
+  display: table;
+  margin: auto;
 }
 
 body {
-    display: table-cell;
-    vertical-align: middle;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 a {
-    color: inherit;
-    /* blue colors for links too */
-    text-decoration: inherit;
-    /* no underline */
+  color: inherit;
+  /* blue colors for links too */
+  text-decoration: inherit;
+  /* no underline */
 }
 
 .styled-table {
-    border-collapse: collapse;
-    font-size: .7em;
-    font-family: sans-serif;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
+  border-collapse: collapse;
+  font-size: 0.7em;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-collapse: collapse;
+
+  overflow: hidden;
 }
 
 .styled-table thead tr {
-    background-color: #070707;
-    color: #ffffff;
-    text-align: left;
+  background-color: #070707;
+  color: #ffffff;
+  text-align: left;
 }
 
 .styled-table th,
 .styled-table td {
-    padding: 12px 15px;
-    vertical-align: middle;
+  padding: 12px 15px;
+  vertical-align: middle;
 }
 
 .styled-table tbody tr {
-    border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-    background-color: #f3f3f3;
+  background-color: #f3f3f3;
 }
 
 .styled-table tbody tr:last-of-type {
-    border-bottom: 2px solid #009879;
-    border-radius: 25px;
+  border-bottom: 2px solid #009879;
+  border-radius: 25px;
 }
 
 .styled-table tbody tr.active-row {
-    font-weight: bold;
-    color: #01221b;
-    background-color: #e41e2757;
+  font-weight: bold;
+  color: #01221b;
+  background-color: #e41e2757;
 }
 
 .active-class {
-    font-weight: bold;
-    color: #c40f09;
+  font-weight: bold;
+  color: #c40f09;
 }
 
 .centered-cell {
-    text-align: center;
+  text-align: center;
 }
 .hiddenRow {
-    padding: 0 !important;
+  padding: 0 !important;
 }
-
-
+.card-body {
+  padding: 0 !important;
+}
+.assistant-img {
+  max-width: 50px;
+}
+.list-assistant {
+  padding: 12px 15px;
+  vertical-align: middle;
+  font-weight: bolder;
+}
