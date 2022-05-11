@@ -102,9 +102,26 @@ a {
 .card-body {
   padding: 0 !important;
 }
-.assistant-img {
-  max-width: 50px;
+.assistant-img{
+    max-width: 80px;
 }
+.thumbnail {
+    border-radius: 50%!important;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+  }
+  .thumbnail img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: auto;
+    width: auto;
+    -webkit-transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+  }
 .list-assistant {
   padding: 12px 15px;
   vertical-align: middle;

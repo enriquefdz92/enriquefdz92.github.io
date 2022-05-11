@@ -46,7 +46,14 @@ function getMonday() {
     d = new Date();
     var day = d.getDay(),
         diff = d.getDate() - day; //+ (day == 0 ? -6 : 1); // adjust when day is sunday
-    return (new Date(d.setDate(diff))).toISOString().split('T')[0];
+    return (new Date(d.setDate(diff))).toISOString().split("T")[0];
+}
+
+function getDate(i) {
+    d = new Date();
+    var day = d.getDay(),
+        diff = d.getDate() - day + i; //+ (day == 0 ? -6 : 1); // adjust when day is sunday
+    return (new Date(d.setDate(diff))).toISOString().split("T")[0];
 }
 
 function getSunday() {
@@ -54,30 +61,41 @@ function getSunday() {
     var result = new Date(date);
     result.setDate(result.getDate() + 6);
 
-    return (new Date(result)).toISOString().split('T')[0];
+    return (new Date(result)).toISOString().split("T")[0];
 }
 
-function getUsersList(classID, usersQty) {
+function getUsersList(classID, users) {
     var ul = document.createElement('ul');
     var li = document.createElement('li');
     ul.classList.add('list-group');
     li.classList.add('list-group-item');
     li.classList.add('list-group-flush');
-    li.classList.add('list-group-item-success');
-    li.innerHTML = "Asistentes";
+    if(users.length==0){
+        li.classList.add('list-group-item-danger');  
+        li.innerHTML = "No hay asistentes";  
+    }else{
+        li.classList.add('list-group-item-success');
+        li.innerHTML = "Asistentes";
+    }
     ul.appendChild(li);
-    for (let i = 0; i < usersQty; i++) {
+    users.forEach(user => {
         var li = document.createElement('li');
         li.classList.add('list-group-item');
 
 
         var img = document.createElement('img');
-        img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png";
+        console.log(user);
+        if(user.avatar_file_name.includes("undefined")||user.avatar_file_name.includes("undefined")){
+            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png"
+        }else{
+            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/"+user.avatar_file_name.replace("members/","");
+        }
         img.classList.add('assistant-img');
         var DivImg = document.createElement('div');
+        DivImg.classList.add('thumbnail');
         DivImg.appendChild(img);
         var DivName = document.createElement('div');
-        DivName.innerHTML = 'Nombre de Usuario';
+        DivName.innerHTML = user.name;
 
         var container = document.createElement('div');
         container.classList.add('container');
@@ -85,7 +103,7 @@ function getUsersList(classID, usersQty) {
         row.classList.add('row');
         var col2 = document.createElement('div');
         col2.classList.add('col-2');
-        col2.appendChild(img);
+        col2.appendChild(DivImg);
         var col10 = document.createElement('div');
         col10.classList.add('col-10');
         col10.classList.add('list-assistant');
@@ -96,7 +114,7 @@ function getUsersList(classID, usersQty) {
         li.appendChild(container);
 
         ul.appendChild(li);
-    }
+    });
 
 
 
@@ -115,14 +133,14 @@ function getUsersList(classID, usersQty) {
     return tr;
 }
 
-function getClases(start, end, authKey) {
+function getClases(start, end, authKey, order) {
     $('#tdata').find('tr.classRow').remove();
     var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
     const urlParams = new URLSearchParams(window.location.search);
     const coachid = urlParams.get('coachid');
     const showAll = urlParams.get('show');
-    url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor&start=" + start + "&end=" + end;
-
+    url = "https://api.atomboxcrm.com/production/admin/lessons?key=moove_indoor&start=" + start + "&end=" + end;
+    url = "https://api.atomboxcrm.com/v1.9/classes/list?date=" + start;
     console.log(url);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
@@ -137,8 +155,9 @@ function getClases(start, end, authKey) {
             }
             var today = new Date();
             //console.log(today.toLocaleString('en-US', { hour12: true}));
-            const obj = JSON.parse(xhr.response);
-            var wanted = obj.lessons.filter(function (item) {
+            const obj = JSON.parse(xhr.response.replace("\"lessons\":", "\"classes\":"));
+            console.log(obj);
+            var wanted = obj.classes.filter(function (item) {
                 var currentweek = getWeek(new Date());
                 var classweek = getWeek(dateFromServer(item.start_at));
                 if (showAll) {
@@ -185,10 +204,21 @@ function getClases(start, end, authKey) {
                 let value3 = Math.floor(Math.random() * 100);
                 var dataTable = createDataTable(clasesPorFecha);
                 card = createNewCard(value3, cardDate, dataTable);
+                card.id = "card" + order;
                 document.getElementById('accordion').appendChild(card);
             });
-            document.querySelector(".class-collapse").classList.add('show');
+
         }
+        var mylist = $('#accordion');
+        var listitems = mylist.children('div').get();
+        listitems.sort(function (a, b) {
+            var compA = $(a).attr('id').toUpperCase();
+            var compB = $(b).attr('id').toUpperCase();
+            return (compA < compB) ? -1 : (compA > compB) ? 1 : 0;
+        })
+        $.each(listitems, function (idx, itm) {
+            mylist.append(itm);
+        });
     };
     xhr.send();
 }
@@ -264,11 +294,9 @@ function createDataTable(data) {
     var tbody = document.createElement('tbody');
 
     data.forEach(x => {
-        console.log(x.available_capacity);
         tbody.appendChild(dataRow(x));
-        if (15 - x.available_capacity > 0) {
-            tbody.appendChild(getUsersList(x.id, 15 - x.available_capacity));
-        }
+        tbody.appendChild(getUsersList(x.id, x.assistants));
+
     });
     table.appendChild(tbody);
 
@@ -316,8 +344,9 @@ function readTextFile(file) {
         if (rawFile.readyState === 4) {
             if (rawFile.status === 200 || rawFile.status == 0) {
                 var authKey = rawFile.responseText;
-                console.log(authKey);
-                getClases(getMonday(), getSunday(new Date()), authKey);
+                for (let i = 0; i < 8; i++) {
+                    getClases(getDate(i), getSunday(new Date()), authKey, i);
+                }
             }
         }
     }
