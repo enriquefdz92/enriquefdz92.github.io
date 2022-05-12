@@ -102,10 +102,10 @@ function getUsersList(classID, users) {
         var row = document.createElement('div');
         row.classList.add('row');
         var col2 = document.createElement('div');
-        col2.classList.add('col-2');
+        col2.classList.add('col-4');
         col2.appendChild(DivImg);
         var col10 = document.createElement('div');
-        col10.classList.add('col-10');
+        col10.classList.add('col-8');
         col10.classList.add('list-assistant');
         col10.appendChild(DivName);
         row.appendChild(col2);
