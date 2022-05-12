@@ -150,8 +150,9 @@ function getClases(start, end, authKey, order) {
     xhr.onreadystatechange = function () {
         $("#loader").hide();
         if (xhr.readyState === 4) {
-            if (xhr.status === 401) {
-                document.getElementById('tdata').innerHTML = '<tr><td>TOKEN EXPIRED</td></tr>';
+            if (!(xhr.status === 200)) {
+                document.getElementById('accordion').innerHTML = '<h3>El Token no ha sido actualizado</h3> Intenta mas tarde';
+                return;
             }
             var today = new Date();
             //console.log(today.toLocaleString('en-US', { hour12: true}));
