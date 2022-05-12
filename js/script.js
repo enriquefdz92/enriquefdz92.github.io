@@ -1,8 +1,6 @@
 var filteredClasses = [];
 var ALL_CLASSES;
 
-
-
 function getClases(start, end, authKey, order) {
     $('#tdata').find('tr.classRow').remove();
     var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
@@ -77,8 +75,7 @@ function dataRow(x) {
     nombre.classList.add('coachname');
     nombre.innerHTML = x.coach.name;
 
-    a.appendChild(foto);
-    a.appendChild(fotoDiv)
+    tdCoach.appendChild(fotoDiv);
     a.appendChild(nombre);
     tdCoach.appendChild(a);
 
@@ -133,7 +130,73 @@ function createDataTable(data) {
 
     return table;
 }
+function getUsersList(classID, users) {
+    var ul = document.createElement('ul');
+    var li = document.createElement('li');
+    ul.classList.add('list-group');
+    li.classList.add('list-group-item');
+    li.classList.add('list-group-flush');
+    if (users.length == 0) {
+        li.classList.add('list-group-item-danger');
+        li.innerHTML = "No hay asistentes";
+    } else {
+        li.classList.add('list-group-item-success');
+        li.innerHTML = "Asistentes";
+    }
+    ul.appendChild(li);
+    users.forEach(user => {
+        var li = document.createElement('li');
+        li.classList.add('list-group-item');
 
+
+        var img = document.createElement('img');
+        if (user.avatar_file_name.includes("undefined") || user.avatar_file_name.includes("undefined")) {
+            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png"
+        } else {
+            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.avatar_file_name.replace("members/", "");
+        }
+        img.classList.add('assistant-img');
+        img.dataset.name = user.name;
+        var DivImg = document.createElement('div');
+        DivImg.classList.add('thumbnail');
+        DivImg.appendChild(img);
+        var DivName = document.createElement('div');
+        DivName.innerHTML = user.name;
+        var container = document.createElement('div');
+        container.classList.add('container');
+        var row = document.createElement('div');
+        row.classList.add('row');
+        var col2 = document.createElement('div');
+        col2.classList.add('col-4');
+        col2.appendChild(DivImg);
+        var col10 = document.createElement('div');
+        col10.classList.add('col-8');
+        col10.classList.add('list-assistant');
+        col10.appendChild(DivName);
+        row.appendChild(col2);
+        row.appendChild(col10);
+        container.appendChild(row);
+        li.appendChild(container);
+        li.id = "assistant-li";
+        ul.appendChild(li);
+    });
+
+
+
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.colSpan = 3;
+    td.classList.add('hiddenRow');
+    var accordianDiv = document.createElement('div');
+    var accordianDiv = document.createElement('div');
+    accordianDiv.classList.add('accordian-body');
+    accordianDiv.classList.add('collapse');
+    accordianDiv.id = "lista" + classID;
+    accordianDiv.appendChild(ul);
+    td.appendChild(accordianDiv);
+    tr.appendChild(td);
+    return tr;
+}
 function createNewCard(id, Htitle, bodyContent) {
     var card = document.createElement('div');
     card.classList.add('card');
@@ -184,3 +247,12 @@ function readTextFile(file) {
 }
 
 readTextFile("https://enriquefdz92.github.io/js/key.txt");
+
+$( document ).ready(function() {
+    $(document).on('click', '.assistant-img', function(event) { 
+        document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
+        document.getElementById('modal-assistant-img').src = event.target.src;
+        $("#modal-assistant-detail").modal('show');
+     });
+
+});
