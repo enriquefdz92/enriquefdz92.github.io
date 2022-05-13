@@ -137,6 +137,7 @@ function getUsersList(x) {
     var ul = document.createElement('ul');
     var li = document.createElement('li');
     ul.classList.add('list-group');
+    ul.classList.add('ul-list');
     li.classList.add('list-group-item');
     li.classList.add('list-group-flush');
     if (users.length == 0) {
@@ -164,7 +165,7 @@ function getUsersList(x) {
         DivImg.classList.add('thumbnail');
         DivImg.appendChild(img);
         var DivName = document.createElement('div');
-        DivName.innerHTML = user.name;
+        DivName.innerHTML = capitalizeFirstLetter(user.name);
         var container = document.createElement('div');
         container.classList.add('container');
         var row = document.createElement('div');

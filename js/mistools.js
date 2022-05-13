@@ -9,7 +9,11 @@ function dateFromServer(s) {
 }
 
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    var temp = '';
+    string.split(" ").forEach(str => {
+        temp = temp +" "+ str.charAt(0).toUpperCase() + str.slice(1);
+    });
+    return temp;
 }
 
 function to12format(t) {
