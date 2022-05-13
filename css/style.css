@@ -1,6 +1,8 @@
-html {
+.html {
   padding: 15px;
   padding-top: 0px;
+  display: table;
+  margin: auto;
 }
 
 #coach-img {
@@ -15,30 +17,11 @@ html {
 .coachname {
   padding-top: 8px;
 }
-
 body {
-  max-width: 750px;
   text-align: center;
+
 }
 
-.disponibilidad {
-  font-size: large;
-}
-
-h5 {
-  font-size: 0.8rem;
-  font-weight: bolder;
-}
-
-html {
-  display: table;
-  margin: auto;
-}
-
-body {
-  display: table-cell;
-  vertical-align: middle;
-}
 
 a {
   color: inherit;
@@ -49,7 +32,7 @@ a {
 
 .styled-table {
   border-collapse: collapse;
-  font-size: 0.7em;
+
   font-family: sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   border-collapse: collapse;
@@ -126,4 +109,7 @@ a {
   padding: 12px 15px;
   vertical-align: middle;
   font-weight: bolder;
+}
+.accordian-body.collapse.show{
+  margin: .5rem;
 }

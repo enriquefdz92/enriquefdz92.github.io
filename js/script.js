@@ -88,7 +88,7 @@ function dataRow(x) {
     if (x.available_capacity < 15) {
         tdRegistrados.classList.add("active-class");
     }
-    tdRegistrados.innerHTML = 15 - x.available_capacity;
+    tdRegistrados.innerHTML = "<h2>" + (15 - x.available_capacity) + "</h2>";
     tr.appendChild(tdCoach);
     tr.appendChild(tdFecha);
     tr.appendChild(tdRegistrados);
@@ -122,7 +122,7 @@ function createDataTable(data) {
 
     data.forEach(x => {
         tbody.appendChild(dataRow(x));
-        tbody.appendChild(getUsersList(x.id, x.assistants));
+        tbody.appendChild(getUsersList(x));
 
     });
     table.appendChild(tbody);
@@ -130,7 +130,10 @@ function createDataTable(data) {
 
     return table;
 }
-function getUsersList(classID, users) {
+
+function getUsersList(x) {
+    var classID = x.id;
+    var users = x.assistants;
     var ul = document.createElement('ul');
     var li = document.createElement('li');
     ul.classList.add('list-group');
@@ -180,7 +183,13 @@ function getUsersList(classID, users) {
         li.id = "assistant-li";
         ul.appendChild(li);
     });
-
+    for (let i = 0; i < 15 - x.capacity; i++) {
+        var empty_user = document.createElement('li');
+        empty_user.classList.add('list-group-item');
+        empty_user.classList.add('list-group-flush');
+        empty_user.innerHTML = "Usuario Reservador por internet";
+        ul.appendChild(empty_user);
+    }
 
 
     var tr = document.createElement('tr');
@@ -197,6 +206,7 @@ function getUsersList(classID, users) {
     tr.appendChild(td);
     return tr;
 }
+
 function createNewCard(id, Htitle, bodyContent) {
     var card = document.createElement('div');
     card.classList.add('card');
@@ -248,11 +258,11 @@ function readTextFile(file) {
 
 readTextFile("https://enriquefdz92.github.io/js/key.txt");
 
-$( document ).ready(function() {
-    $(document).on('click', '.assistant-img', function(event) { 
+$(document).ready(function () {
+    $(document).on('click', '.assistant-img', function (event) {
         document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
         document.getElementById('modal-assistant-img').src = event.target.src;
         $("#modal-assistant-detail").modal('show');
-     });
+    });
 
 });
