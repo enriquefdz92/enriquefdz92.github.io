@@ -16,7 +16,12 @@ function getClases(start, end, authKey, order) {
         $("#loader").hide();
         if (xhr.readyState === 4) {
             if (!(xhr.status === 200)) {
-                document.getElementById('accordion').innerHTML = '<h3>El Token no ha sido actualizado</h3> Intenta mas tarde';
+                document.getElementById('accordion').innerHTML = `
+                <h3>El Token no ha sido actualizado</h3> 
+                Intenta mas tarde </br></br>
+                <button id="refresh-btn" type="button" class="btn btn-secondary">Reintentar</button>
+                
+                `;
                 return;
             }
             ALL_CLASSES = JSON.parse(xhr.response.replace("\"lessons\":", "\"classes\":"));
@@ -241,14 +246,14 @@ function createNewCard(id, Htitle, bodyContent) {
 }
 
 
-function readTextFile(file) {
+function readTextFile(file, a) {
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET", file);
     rawFile.onreadystatechange = function () {
         if (rawFile.readyState === 4) {
             if (rawFile.status === 200 || rawFile.status == 0) {
                 var authKey = rawFile.responseText;
-                for (let i = 0; i < 8; i++) {
+                for (let i = 0; i < 10; i++) {
                     getClases(getDate(i), getSunday(new Date()), authKey, i);
                 }
             }
@@ -257,13 +262,20 @@ function readTextFile(file) {
     rawFile.send(null);
 }
 
-readTextFile("https://enriquefdz92.github.io/js/key.txt");
+readTextFile("https://enriquefdz92.github.io/js/key.txt","asdf");
 
 $(document).ready(function () {
+    
     $(document).on('click', '.assistant-img', function (event) {
         document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
         document.getElementById('modal-assistant-img').src = event.target.src;
         $("#modal-assistant-detail").modal('show');
+    });
+
+    $(document).on('click', '#refresh-btn', function (event) {
+        document.getElementById('accordion').innerHTML= "";
+        $("#loader").show();
+        readTextFile("https://enriquefdz92.github.io/js/key.txt","");
     });
 
 });
