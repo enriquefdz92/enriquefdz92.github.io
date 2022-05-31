@@ -145,7 +145,7 @@ function getUsersList(x) {
     ul.classList.add('ul-list');
     li.classList.add('list-group-item');
     li.classList.add('list-group-flush');
-    if (users.length == 0) {
+    if (users.length == 0 && x.capacity ==15) {
         li.classList.add('list-group-item-danger');
         li.innerHTML = "No hay asistentes";
     } else {
@@ -193,7 +193,7 @@ function getUsersList(x) {
         var empty_user = document.createElement('li');
         empty_user.classList.add('list-group-item');
         empty_user.classList.add('list-group-flush');
-        empty_user.innerHTML = "Usuario Reservador por internet";
+        empty_user.innerHTML = "Usuario Reservado por internet";
         ul.appendChild(empty_user);
     }
 
