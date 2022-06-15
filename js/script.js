@@ -176,7 +176,7 @@ function getUsersList(x) {
         var row = document.createElement('div');
         row.classList.add('row');
         var col2 = document.createElement('div');
-        col2.classList.add('col-4');
+        col2.classList.add('col-3');
         col2.appendChild(DivImg);
         var col10 = document.createElement('div');
         col10.classList.add('col-6');
@@ -184,7 +184,7 @@ function getUsersList(x) {
         col10.appendChild(DivName);
 
         var col3 = document.createElement('div');
-        col3.classList.add('col-2');
+        col3.classList.add('col-3');
         col3.classList.add('list-assistant');
         col3.appendChild(DivBiciID);
 
@@ -200,7 +200,7 @@ function getUsersList(x) {
         var empty_user = document.createElement('li');
         empty_user.classList.add('list-group-item');
         empty_user.classList.add('list-group-flush');
-        empty_user.innerHTML = `<div class="container"><div class="row"><div class="col-4"><div class="thumbnail"><img src="https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png" class="assistant-img" data-name="No Registrado"></div></div><div class="col-6 list-assistant"><div> No Registrado</div></div><div class="col-2 list-assistant"><div>?</div></div></div></div>`;
+        empty_user.innerHTML = `<div class="container"><div class="row"><div class="col-3"><div class="thumbnail"><img src="https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png" class="assistant-img" data-name="No Registrado"></div></div><div class="col-6 list-assistant"><div> No Registrado</div></div><div class="col-3 list-assistant"><div>?</div></div></div></div>`;
         ul.appendChild(empty_user);
     }
 
