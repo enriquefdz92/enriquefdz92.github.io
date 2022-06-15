@@ -57,7 +57,7 @@ function getDate(i) {
 function getSunday() {
     const date = getMonday();
     var result = new Date(date);
-    result.setDate(result.getDate() + 6);
+    result.setDate(result.getDate() + 7);
 
     return (new Date(result)).toISOString().split("T")[0];
 }

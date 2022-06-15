@@ -3,9 +3,8 @@ var ALL_CLASSES;
 
 function getClases(start, end, authKey, order) {
     $('#tdata').find('tr.classRow').remove();
-    var url = "https://api.atomboxcrm.com/production/landing/lessons?key=moove_indoor";
-
-
+    var url = `https://api.atomboxcrm.com/production/admin/classes/list?start=${start}&end=${end}&branch_id=&category_id=`;
+    console.log(url);
     url = "https://api.atomboxcrm.com/v1.9/classes/list?date=" + start;
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
@@ -157,7 +156,6 @@ function getUsersList(x) {
         var li = document.createElement('li');
         li.classList.add('list-group-item');
 
-
         var img = document.createElement('img');
         if (user.avatar_file_name.includes("undefined") || user.avatar_file_name.includes("undefined")) {
             img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png"
@@ -171,6 +169,8 @@ function getUsersList(x) {
         DivImg.appendChild(img);
         var DivName = document.createElement('div');
         DivName.innerHTML = capitalizeFirstLetter(user.name);
+        var DivBiciID = document.createElement('div');
+        DivBiciID.innerHTML =  `#`+user.member_fitness_class.ref ;
         var container = document.createElement('div');
         container.classList.add('container');
         var row = document.createElement('div');
@@ -179,11 +179,18 @@ function getUsersList(x) {
         col2.classList.add('col-4');
         col2.appendChild(DivImg);
         var col10 = document.createElement('div');
-        col10.classList.add('col-8');
+        col10.classList.add('col-6');
         col10.classList.add('list-assistant');
         col10.appendChild(DivName);
+
+        var col3 = document.createElement('div');
+        col3.classList.add('col-2');
+        col3.classList.add('list-assistant');
+        col3.appendChild(DivBiciID);
+
         row.appendChild(col2);
         row.appendChild(col10);
+        row.appendChild(col3);
         container.appendChild(row);
         li.appendChild(container);
         li.id = "assistant-li";
@@ -193,7 +200,7 @@ function getUsersList(x) {
         var empty_user = document.createElement('li');
         empty_user.classList.add('list-group-item');
         empty_user.classList.add('list-group-flush');
-        empty_user.innerHTML = "Usuario Reservado por internet";
+        empty_user.innerHTML = `<div class="container"><div class="row"><div class="col-4"><div class="thumbnail"><img src="https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png" class="assistant-img" data-name="No Registrado"></div></div><div class="col-6 list-assistant"><div> No Registrado</div></div><div class="col-2 list-assistant"><div>?</div></div></div></div>`;
         ul.appendChild(empty_user);
     }
 
