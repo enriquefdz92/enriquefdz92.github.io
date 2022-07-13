@@ -115,7 +115,7 @@ function getApiURL() {
 
 function loadData() {
     applyFilters();
-    
+    document.getElementById('accordion').innerHTML = "";
     if (wanted.length == 0) {
         $("#noelements").show();
     }
