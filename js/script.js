@@ -246,6 +246,7 @@ function getUsersList(x) {
         li.innerHTML = "Asistentes";
     }
     ul.appendChild(li);
+    users.sort(function(a,b) {return a.ref - b.ref});
     users.forEach(user => {
 
         var li = document.createElement('li');
