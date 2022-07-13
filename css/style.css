@@ -115,3 +115,6 @@ a {
 .table{
  margin-bottom: 0 !important;
 }
+.form-group{
+  padding-bottom: 5px;;
+}

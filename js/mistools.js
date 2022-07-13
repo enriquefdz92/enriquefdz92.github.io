@@ -1,7 +1,7 @@
 function dateFromServer(s) {
-    var year = s.split(" ")[0].split("-")[2];
+    var year = s.split(" ")[0].split("-")[0];
     var month = s.split(" ")[0].split("-")[1];
-    var day = s.split(" ")[0].split("-")[0];
+    var day = s.split(" ")[0].split("-")[2];
     var hour = s.split(" ")[1].split(":")[0];
     var minutes = s.split(" ")[1].split(":")[1];
     var date = new Date(year, month - 1, day, hour, minutes);
@@ -63,19 +63,8 @@ function getSunday() {
 }
 
 function applyFilters() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const coachid = urlParams.get('coachid');
-    const showAll = urlParams.get('show');
-    wanted = ALL_CLASSES.classes.filter(function (item) {
-        if (showAll) {
-            console.log("showing all");
-            return true;
-        } else {
-            if (new Date() > dateFromServer(item.start_at)) {
-                return false;
-            }
-        }
-        if (coachid) {
+    wanted = ALL_CLASSES.filter(function (item) {
+        if (coachid && coachid !="Todos") {
             return (item.coach.id == coachid);
         } else {
             return true;
@@ -95,4 +84,5 @@ function sort() {
     $.each(listitems, function (idx, itm) {
         mylist.append(itm);
     });
+     if (coachid) $('#accordion .class-collapse').collapse('show');
 }

@@ -1,11 +1,18 @@
 var filteredClasses = [];
-var ALL_CLASSES;
+var ALL_CLASSES = [];
+var AuthToken;
+const urlParams = new URLSearchParams(window.location.search);
+var coachid = urlParams.get('coachid');
+const showAll = urlParams.get('show');
+const AuthUrl = "https://enriquefdz92.github.io/js/key.txt";
 
-function getClases(start, end, authKey, order) {
+function getClases(authKey) {
+    ALL_CLASSES = [];
     $('#tdata').find('tr.classRow').remove();
-    var url = `https://api.atomboxcrm.com/production/admin/classes/list?start=${start}&end=${end}&branch_id=&category_id=`;
-    console.log(url);
-    url = "https://api.atomboxcrm.com/v1.9/classes/list?date=" + start;
+    document.getElementById('accordion').innerHTML = "";
+    var url = getApiURL();
+    //url = "https://api.atomboxcrm.com/v1.9/classes/list?date=" + start;
+    console.log(authKey);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
 
@@ -19,45 +26,132 @@ function getClases(start, end, authKey, order) {
                 <h3>El Token no ha sido actualizado</h3> 
                 Intenta mas tarde </br></br>
                 <button id="refresh-btn" type="button" class="btn btn-secondary">Reintentar</button>
-                
                 `;
                 return;
             }
-            ALL_CLASSES = JSON.parse(xhr.response.replace("\"lessons\":", "\"classes\":"));
-            applyFilters();
-            if (wanted.length == 0) {
-                $("#noelements").show();
-            }
-            var tempDate = '';
-            var card;
-            var classes = [];
-            wanted.forEach(x => {
-                var sDate = spanishDate(dateFromServer(x.start_at)).split('<')[0];
-                if (tempDate != sDate) {
-                    tempDate = sDate;
-                    if (tempDate != '') {
-                        classes.push(sDate);
-                    }
-                }
+            var classes = JSON.parse(xhr.response.replace("\"lessons\":", "\"classes\":")).classes;
+            if (classes.length == 0) return;
+            classes.forEach(clas => {
+                if (clas != undefined) ALL_CLASSES.push(clas);
             });
-            classes.forEach(cardDate => {
-                var clasesPorFecha = wanted.filter(x => spanishDate(dateFromServer(x.start_at)).startsWith(cardDate));
-                let value3 = Math.floor(Math.random() * 100);
-                var dataTable = createDataTable(clasesPorFecha);
-                card = createNewCard(value3, cardDate, dataTable);
-                card.id = "card" + order;
-                document.getElementById('accordion').appendChild(card);
-            });
-
+            loadData();
         }
-        sort();
+        //    sort();
     };
     xhr.send();
 }
 
+function refreshClasses() {
+    $("#loader").show();
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", AuthUrl);
+    rawFile.onreadystatechange = function () {
+        if (rawFile.readyState === 4) {
+            if (rawFile.status === 200 || rawFile.status == 0) {
+                console.log(rawFile);
+                AuthToken = rawFile.responseText;
+                getClases(AuthToken);
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
+
+$(document).ready(function () {
+
+    $(document).on('click', '.assistant-img', function (event) {
+        document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
+        document.getElementById('modal-assistant-img').src = event.target.src;
+        $("#modal-assistant-detail").modal('show');
+    });
+    $('#inputState').on('change', function () {
+        coachid = this.value;
+        if (this.value == "Todos") coachid = null;
+        loadData();
+        sort();
+    });
+    $(document).on('click', '#refresh-btn', function (event) {
+        document.getElementById('accordion').innerHTML = "";
+        refreshClasses();
+    });
+
+
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            startDate: moment().startOf('week').add(1, 'day'),
+            endDate: moment().endOf('week').add(1, 'day'),
+            minDate: moment().subtract(1, 'month'),
+            "locale": {
+                "applyLabel": "Aplicar",
+                "cancelLabel": "Cancelar",
+                "firstDay": 1
+            },
+            opens: 'center'
+        }, function (start, end, label) {
+
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            refreshClasses();
+
+        });
+    });
+
+    refreshClasses();
+});
+
+function resetWeek() {
+    console.log(getApiURL());
+    $('input[name="daterange"]').data('daterangepicker').setStartDate(moment().startOf('week').add(1, 'day'));
+    $('input[name="daterange"]').data('daterangepicker').setEndDate(moment().endOf('week').add(1, 'day'));
+    refreshClasses();
+}
+
+function getApiURL() {
+    var startDate = $('input[name="daterange"]').data('daterangepicker').startDate.format('YYYY-MM-DD');
+    var endDate = $('input[name="daterange"]').data('daterangepicker').endDate.format('YYYY-MM-DD');
+    var url = `https://api.atomboxcrm.com/production/admin/classes/list?start=${startDate}&end=${endDate}&branch_id=&category_id=`;
+    return url;
+}
+
+function loadData() {
+    applyFilters();
+    
+    if (wanted.length == 0) {
+        $("#noelements").show();
+    }
+    var tempDate = '';
+    var card;
+    var classes = [];
+    wanted.forEach(x => {
+        var sDate = spanishDate(dateFromServer(x.start)).split('<')[0];
+        if (tempDate != sDate) {
+            tempDate = sDate;
+            if (tempDate != '') {
+                classes.push(sDate);
+            }
+        }
+    });
+    classes.forEach(cardDate => {
+        var id;
+        var clasesPorFecha = wanted.filter(x => {
+            return spanishDate(dateFromServer(x.start)).startsWith(cardDate);
+        });
+        let value3 = clasesPorFecha[0].start.split(" ")[0].replace("-", "");
+        var dataTable = createDataTable(clasesPorFecha);
+        card = createNewCard(value3, cardDate, dataTable);
+        card.id = "card" + value3;
+        document.getElementById('accordion').appendChild(card);
+    });
+}
+
 function dataRow(x) {
+    //ADDING COACH TO SELELECTOR
+    var optionExists = ($('#inputState option[value="' + x.coach.id + '"]').length > 0);
+    if (!optionExists) {
+        $('#inputState').append("<option value='" + x.coach.id + "'>" + x.coach.name + "</option>");
+    }
     var today = new Date();
-    var classDate = dateFromServer(x.start_at);
+    var classDate = dateFromServer(x.start);
     var tr = document.createElement('tr');
     tr.classList.add("classRow");
     tr.classList.add('accordion-toggle');
@@ -69,7 +163,7 @@ function dataRow(x) {
 
     var tdCoach = document.createElement('td');
     var a = document.createElement('a');
-    a.href = "?coachid=" + x.coach.id;
+    //a.href = "?coachid=" + x.coach.id;
     var foto = document.createElement('img');
     foto.id = "coach-img";
     foto.src = "img/coaches/" + x.coach.name.replace(" ", "") + ".jpg";
@@ -85,7 +179,7 @@ function dataRow(x) {
 
     var tdFecha = document.createElement('td');
     tdFecha.id = "date";
-    tdFecha.innerHTML = spanishDate(dateFromServer(x.start_at));
+    tdFecha.innerHTML = spanishDate(dateFromServer(x.start));
 
     var tdRegistrados = document.createElement('td');
     tdRegistrados.classList.add("disponibilidad");
@@ -112,7 +206,7 @@ function createDataTable(data) {
     var Hth2 = document.createElement('th');
     var Hth3 = document.createElement('th');
     Hth1.classList.add("centered-cell");
-    Hth1.innerHTML = "<a href=\"?all\">Coach</a>";
+    Hth1.innerHTML = "<a>Coach</a>";
     Htr.appendChild(Hth1);
     Hth2.classList.add("centered-cell");
     Hth2.innerHTML = "<a href=\"?show='all'\">Fecha</a>";
@@ -137,14 +231,14 @@ function createDataTable(data) {
 
 function getUsersList(x) {
     var classID = x.id;
-    var users = x.assistants;
+    var users = x.member_class;
     var ul = document.createElement('ul');
     var li = document.createElement('li');
     ul.classList.add('list-group');
     ul.classList.add('ul-list');
     li.classList.add('list-group-item');
     li.classList.add('list-group-flush');
-    if (users.length == 0 && x.capacity ==15) {
+    if (users.length == 0 && x.capacity == 15) {
         li.classList.add('list-group-item-danger');
         li.innerHTML = "No hay asistentes";
     } else {
@@ -153,24 +247,33 @@ function getUsersList(x) {
     }
     ul.appendChild(li);
     users.forEach(user => {
+
         var li = document.createElement('li');
         li.classList.add('list-group-item');
 
         var img = document.createElement('img');
-        if (user.avatar_file_name.includes("undefined") || user.avatar_file_name.includes("undefined")) {
+        if (user.member_end == null) {
+            user.member_end = {
+                name: "",
+                avatar_file_name: "undefined"
+            };
+        }
+        console.log(user);
+        if (user.member_end.avatar_file_name.includes("undefined") || user.member_end.avatar_file_name.includes("undefined")) {
             img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png"
         } else {
-            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.avatar_file_name.replace("members/", "");
+            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.member_end.avatar_file_name.replace("members/", "");
         }
+
         img.classList.add('assistant-img');
         img.dataset.name = user.name;
         var DivImg = document.createElement('div');
         DivImg.classList.add('thumbnail');
         DivImg.appendChild(img);
         var DivName = document.createElement('div');
-        DivName.innerHTML = capitalizeFirstLetter(user.name);
+        DivName.innerHTML = capitalizeFirstLetter(user.member_end.name);
         var DivBiciID = document.createElement('div');
-        DivBiciID.innerHTML =  `#`+user.member_fitness_class.ref ;
+        DivBiciID.innerHTML = `#` + user.ref;
         var container = document.createElement('div');
         container.classList.add('container');
         var row = document.createElement('div');
@@ -251,38 +354,3 @@ function createNewCard(id, Htitle, bodyContent) {
     card.appendChild(cardColapse);
     return card;
 }
-
-
-function readTextFile(file, a) {
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file);
-    rawFile.onreadystatechange = function () {
-        if (rawFile.readyState === 4) {
-            if (rawFile.status === 200 || rawFile.status == 0) {
-                var authKey = rawFile.responseText;
-                for (let i = 0; i < 10; i++) {
-                    getClases(getDate(i), getSunday(new Date()), authKey, i);
-                }
-            }
-        }
-    }
-    rawFile.send(null);
-}
-
-readTextFile("https://enriquefdz92.github.io/js/key.txt","asdf");
-
-$(document).ready(function () {
-    
-    $(document).on('click', '.assistant-img', function (event) {
-        document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
-        document.getElementById('modal-assistant-img').src = event.target.src;
-        $("#modal-assistant-detail").modal('show');
-    });
-
-    $(document).on('click', '#refresh-btn', function (event) {
-        document.getElementById('accordion').innerHTML= "";
-        $("#loader").show();
-        readTextFile("https://enriquefdz92.github.io/js/key.txt","");
-    });
-
-});
