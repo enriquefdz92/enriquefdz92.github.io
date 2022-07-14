@@ -329,10 +329,12 @@ function getUsersList(x) {
     var row = document.createElement('div');
     row.classList.add('row');
     var chartCol = document.createElement('div');
-    chartCol.classList.add('col-4');
+    chartCol.classList.add('col-12');
+    chartCol.classList.add('col-md-4');
     chartCol.appendChild(createNewCanvas(colorsAssistencia));
     var listCol = document.createElement('div');
-    listCol.classList.add('col-8');
+    listCol.classList.add('col-12');
+    listCol.classList.add('col-md-8');
     listCol.appendChild(ul);
 
     row.appendChild(chartCol);
