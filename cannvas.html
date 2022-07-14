@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvas"></div>
+   
+    <script>
+    function createNewCanvas(colors){
+        var canvas = document.createElement('canvas');
+        canvas.width = 200;
+        canvas.height = 200;
+        var context = canvas.getContext('2d');
+        var centerX = 60;
+        var centerY = 20;
+        var radius = 10;
+        var asistencia = colors;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[0];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[1];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[2];
+        context.fill();
+
+        centerY = centerY + radius*4;
+        centerX = radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[3];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[4];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[5];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[6];
+        context.fill();
+
+        centerY = centerY + radius*4;
+        centerX = radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[7];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[8];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[9];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[10];
+        context.fill();
+
+        centerY = centerY + radius*4;
+        centerX = radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[11];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[12];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[13];
+        context.fill();
+        centerX = centerX + radius*4;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.fillStyle = asistencia[14];
+        context.fill();
+        return canvas;
+    }
+
+    document.getElementById('canvas').appendChild(createNewCanvas(['green','green','green','green','green','green','green','green','green','green','green','green','green','green','green']));
+    var asistencia = ['green','green','green','green','green','green','green','green','green','green','green','green','green','green','green'];
+    asistencia[2]= 'red';
+    document.getElementById('canvas').appendChild(createNewCanvas(asistencia));
+    </script>
+</body>
+
+</html>

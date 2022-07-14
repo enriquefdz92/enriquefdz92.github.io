@@ -20,11 +20,7 @@
 
 body {
   text-align: center;
-
 }
-
-
-
 
 a {
   color: inherit;
@@ -62,7 +58,6 @@ a {
   background-color: #f3f3f3;
 }
 
-
 .styled-table tbody tr.active-row {
   font-weight: bold;
   color: #01221b;
@@ -83,38 +78,47 @@ a {
 .card-body {
   padding: 0 !important;
 }
-.assistant-img{
-    max-width: 50px;
+.assistant-img {
+  max-width: 50px;
 }
 .thumbnail {
-    border-radius: 50%!important;
-    position: relative;
-    width: 50px;
-    height: 50px;
-    overflow: hidden;
-  }
-  .thumbnail img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: auto;
-    width: auto;
-    -webkit-transform: translate(-50%,-50%);
-        -ms-transform: translate(-50%,-50%);
-            transform: translate(-50%,-50%);
-  }
+  border-radius: 50% !important;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+}
+.thumbnail img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: auto;
+  width: auto;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
 .list-assistant {
   padding: 12px 15px;
   vertical-align: middle;
   font-weight: bolder;
 }
-.ul-list{
-  margin: .5rem;
+.ul-list {
+  margin: 0.5rem;
 }
 
-.table{
- margin-bottom: 0 !important;
+.table {
+  margin-bottom: 0 !important;
 }
-.form-group{
-  padding-bottom: 5px;;
+.form-group {
+  padding-bottom: 5px;
+}
+canvas {
+  padding-top: 20px;
+}
+
+.todayHeader {
+  font-weight: bold;
+  font-size: large;
+  color: crimson;
 }

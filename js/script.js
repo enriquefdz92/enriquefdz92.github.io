@@ -12,7 +12,6 @@ function getClases(authKey) {
     document.getElementById('accordion').innerHTML = "";
     var url = getApiURL();
     //url = "https://api.atomboxcrm.com/v1.9/classes/list?date=" + start;
-    console.log(authKey);
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url);
 
@@ -48,7 +47,6 @@ function refreshClasses() {
     rawFile.onreadystatechange = function () {
         if (rawFile.readyState === 4) {
             if (rawFile.status === 200 || rawFile.status == 0) {
-                console.log(rawFile);
                 AuthToken = rawFile.responseText;
                 getClases(AuthToken);
             }
@@ -137,8 +135,14 @@ function loadData() {
             return spanishDate(dateFromServer(x.start)).startsWith(cardDate);
         });
         let value3 = clasesPorFecha[0].start.split(" ")[0].replace("-", "");
+        var today = new Date();
+        var headerClass = 'nullClass';
+        if (today.setHours(0, 0, 0, 0) === dateFromServer(clasesPorFecha[0].start).setHours(0, 0, 0, 0)) {
+            headerClass = 'todayHeader';
+        }
+        console.log(headerClass);
         var dataTable = createDataTable(clasesPorFecha);
-        card = createNewCard(value3, cardDate, dataTable);
+        card = createNewCard(value3, cardDate, dataTable,headerClass);
         card.id = "card" + value3;
         document.getElementById('accordion').appendChild(card);
     });
@@ -232,6 +236,7 @@ function createDataTable(data) {
 function getUsersList(x) {
     var classID = x.id;
     var users = x.member_class;
+    var colorsAssistencia = ['green','green','green','green','green','green','green','green','green','green','green','green','green','green','green'];
     var ul = document.createElement('ul');
     var li = document.createElement('li');
     ul.classList.add('list-group');
@@ -259,7 +264,6 @@ function getUsersList(x) {
                 avatar_file_name: "undefined"
             };
         }
-        console.log(user);
         if (user.member_end.avatar_file_name.includes("undefined") || user.member_end.avatar_file_name.includes("undefined")) {
             img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png"
         } else {
@@ -275,6 +279,7 @@ function getUsersList(x) {
         DivName.innerHTML = capitalizeFirstLetter(user.member_end.name);
         var DivBiciID = document.createElement('div');
         DivBiciID.innerHTML = `#` + user.ref;
+        colorsAssistencia[user.ref -1] = 'red';
         var container = document.createElement('div');
         container.classList.add('container');
         var row = document.createElement('div');
@@ -318,13 +323,122 @@ function getUsersList(x) {
     accordianDiv.classList.add('accordian-body');
     accordianDiv.classList.add('collapse');
     accordianDiv.id = "lista" + classID;
-    accordianDiv.appendChild(ul);
+
+    var listAndChartContainer =  document.createElement('div');
+    listAndChartContainer.classList.add('container');
+    var row = document.createElement('div');
+    row.classList.add('row');
+    var chartCol = document.createElement('div');
+    chartCol.classList.add('col-4');
+    chartCol.appendChild(createNewCanvas(colorsAssistencia));
+    var listCol = document.createElement('div');
+    listCol.classList.add('col-8');
+    listCol.appendChild(ul);
+
+    row.appendChild(chartCol);
+    row.appendChild(listCol);
+    listAndChartContainer.appendChild(row);
+
+    accordianDiv.appendChild(listAndChartContainer);
     td.appendChild(accordianDiv);
     tr.appendChild(td);
     return tr;
 }
+function createNewCanvas(colors){
+    var canvas = document.createElement('canvas');
+    canvas.width = 160;
+    canvas.height = 160;
+    var context = canvas.getContext('2d');
+    var centerX = 30;
+    var centerY = 10;
+    var radius = 10;
+    var XFactor = 4;
+    var YFactor = 4;
+    var asistencia = colors;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[0];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[1];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[2];
+    context.fill();
 
-function createNewCard(id, Htitle, bodyContent) {
+    centerY = centerY + radius*YFactor;
+    centerX = 10;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[3];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[4];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[5];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[6];
+    context.fill();
+
+    centerY = centerY + radius*YFactor;
+    centerX = 10;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[7];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[8];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[9];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[10];
+    context.fill();
+
+    centerY = centerY + radius*YFactor;
+    centerX = 10;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[11];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[12];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[13];
+    context.fill();
+    centerX = centerX + radius*XFactor;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+    context.fillStyle = asistencia[14];
+    context.fill();
+    return canvas;
+}
+
+function createNewCard(id, Htitle, bodyContent,todayHeader) {
     var card = document.createElement('div');
     card.classList.add('card');
     var cardHeader = document.createElement('div');
@@ -333,6 +447,7 @@ function createNewCard(id, Htitle, bodyContent) {
     var title = document.createElement('h5');
     title.classList.add('mb-0');
     var button = document.createElement('button');
+    button.classList.add(todayHeader);
     button.classList.add('btn');
     button.dataset.toggle = 'collapse';
     button.dataset.target = '#collapse' + id;
