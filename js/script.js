@@ -67,14 +67,20 @@ $(document).ready(function () {
             this.innerHTML = '';
             data.forEach(e =>{
                 if(e.id==i){
-                    console.log(e);
                     this.innerHTML = capitalizeFirstLetter(e.user.split(' ')[0]);
                 }
             });
             i++;
         });
+       // i=1;
         $('#bike-distribution > div * img').each(function() {
             this.src = 'https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png';
+            data.forEach(e =>{
+                if(e.id==i){
+                    this.src = e.img;
+                }
+            });
+            i++;
         });
         $("#modal-class-details").modal('show');
     });
