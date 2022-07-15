@@ -68,7 +68,7 @@ $(document).ready(function () {
             data.forEach(e =>{
                 if(e.id==i){
                     console.log(e);
-                    this.innerHTML = capitalizeFirstLetter(e.user);
+                    this.innerHTML = capitalizeFirstLetter(e.user.split(' ')[0]);
                 }
             });
             i++;
@@ -79,7 +79,7 @@ $(document).ready(function () {
         $("#modal-class-details").modal('show');
     });
     $(document).on('click', '.assistant-img', function (event) {
-        document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name.split(' ')[0];
+        document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
         document.getElementById('modal-assistant-img').src = event.target.src;
         $("#modal-assistant-detail").modal('show');
     });
