@@ -57,7 +57,27 @@ function refreshClasses() {
 
 
 $(document).ready(function () {
-
+    $(document).on('click','canvas',function(event){
+        var data = JSON.parse(event.target.dataset.classData);
+        var mainData = JSON.parse(event.target.parentNode.parentNode.dataset.classData);
+        var i = 1;
+        $('#modal-classDate').text(mainData.date.replace('<h5>',' ').replace('</h5>',''));
+        $('#modal-coachName').text( mainData.coach);
+        $('#bike-distribution > div * p').each(function() {
+            this.innerHTML = '';
+            data.forEach(e =>{
+                if(e.id==i){
+                    console.log(e);
+                    this.innerHTML = capitalizeFirstLetter(e.user);
+                }
+            });
+            i++;
+        });
+        $('#bike-distribution > div * img').each(function() {
+            this.src = 'https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png';
+        });
+        $("#modal-class-details").modal('show');
+    });
     $(document).on('click', '.assistant-img', function (event) {
         document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
         document.getElementById('modal-assistant-img').src = event.target.src;
@@ -252,7 +272,9 @@ function getUsersList(x) {
     }
     ul.appendChild(li);
     users.sort(function(a,b) {return a.ref - b.ref});
+    var classObjectForCanvas = [];
     users.forEach(user => {
+        if (user.status == 'canceled') return;
 
         var li = document.createElement('li');
         li.classList.add('list-group-item');
@@ -280,6 +302,7 @@ function getUsersList(x) {
         var DivBiciID = document.createElement('div');
         DivBiciID.innerHTML = `#` + user.ref;
         colorsAssistencia[user.ref -1] = 'red';
+        classObjectForCanvas.push({"user":user.member_end.name,"id": user.ref,"img": img.src});
         var container = document.createElement('div');
         container.classList.add('container');
         var row = document.createElement('div');
@@ -329,9 +352,10 @@ function getUsersList(x) {
     var row = document.createElement('div');
     row.classList.add('row');
     var chartCol = document.createElement('div');
+    row.dataset.classData = `{"coach": "${x.coach.name}" , "date" : "${spanishDate(dateFromServer(x.start))}" }`;
     chartCol.classList.add('col-12');
     chartCol.classList.add('col-md-4');
-    chartCol.appendChild(createNewCanvas(colorsAssistencia));
+    chartCol.appendChild(createNewCanvas(colorsAssistencia,classObjectForCanvas));
     var listCol = document.createElement('div');
     listCol.classList.add('col-12');
     listCol.classList.add('col-md-8');
@@ -346,8 +370,9 @@ function getUsersList(x) {
     tr.appendChild(td);
     return tr;
 }
-function createNewCanvas(colors){
+function createNewCanvas(colors,classObjectForCanvas){
     var canvas = document.createElement('canvas');
+    canvas.dataset.classData = JSON.stringify(classObjectForCanvas) ;
     canvas.width = 160;
     canvas.height = 160;
     var context = canvas.getContext('2d');

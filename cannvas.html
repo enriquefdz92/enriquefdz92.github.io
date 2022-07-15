@@ -12,104 +12,164 @@
 
 <body>
     <div id="canvas"></div>
-   
+
     <script>
-    function createNewCanvas(colors){
-        var canvas = document.createElement('canvas');
-        canvas.width = 200;
-        canvas.height = 200;
-        var context = canvas.getContext('2d');
-        var centerX = 60;
-        var centerY = 20;
-        var radius = 10;
-        var asistencia = colors;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[0];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[1];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[2];
-        context.fill();
+        function createNewCanvas(colors) {
+            var canvas = document.createElement('canvas');
+            var diameter = 100;
+            var radius = diameter / 2;
+            canvas.width = radius * 11;
+            canvas.height = radius * 12;
+            var context = canvas.getContext('2d');
+            var centerX = radius * 2.5;
+            console.log(centerX);
+            var centerY = canvas.height / 10;
+            var RowSpace = radius * 1;
+            var XFactor = radius * 3;
+            var YFactor = radius * 3;
+            var asistencia = colors;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[0];
+            context.fill();
 
-        centerY = centerY + radius*4;
-        centerX = radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[3];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[4];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[5];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[6];
-        context.fill();
+            base_image = new Image();
+            base_image.src = 'img/coaches/LUISADIAZ.jpg';
+            base_image.onload = function () {
+                context.save();
+                context.beginPath();
+                context.arc(radius, radius, radius, 0, 2 * Math.PI, true);
+                context.closePath();
+                context.clip();
+                context.drawImage(base_image, 0, 0, diameter, diameter);
+                context.beginPath();
+                context.arc(0, 0, radius, 0, Math.PI * 2, true);
+                context.clip();
+                context.closePath();
+                context.restore();
+            }
 
-        centerY = centerY + radius*4;
-        centerX = radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[7];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[8];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[9];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[10];
-        context.fill();
+            Bbase_image = new Image();
+            Bbase_image.src = 'img/coaches/ENRIQUEFERNANDEZ.jpg';
+            Bbase_image.onload = function () {
+                context.save();
+                context.beginPath();
+                context.arc(radius, diameter *4, diameter *4, 0, 2 * Math.PI, true);
+                context.closePath();
+                context.clip();
+                context.drawImage(Bbase_image, diameter*2, 0, diameter, diameter);
 
-        centerY = centerY + radius*4;
-        centerX = radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[11];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[12];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[13];
-        context.fill();
-        centerX = centerX + radius*4;
-        context.beginPath();
-        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-        context.fillStyle = asistencia[14];
-        context.fill();
-        return canvas;
-    }
+            }
 
-    document.getElementById('canvas').appendChild(createNewCanvas(['green','green','green','green','green','green','green','green','green','green','green','green','green','green','green']));
-    var asistencia = ['green','green','green','green','green','green','green','green','green','green','green','green','green','green','green'];
-    asistencia[2]= 'red';
-    document.getElementById('canvas').appendChild(createNewCanvas(asistencia));
+
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[1];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[2];
+            context.fill();
+
+
+
+
+            centerY = centerY + YFactor;
+            centerX = RowSpace;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[3];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[4];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[5];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[6];
+            context.fill();
+
+            centerY = centerY + YFactor;
+            centerX = RowSpace;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[7];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[8];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[9];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[10];
+            context.fill();
+
+            centerY = centerY + YFactor;
+            centerX = RowSpace;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[11];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[12];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[13];
+            context.fill();
+            centerX = centerX + XFactor;
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = asistencia[14];
+            context.fill();
+
+            /*
+                        base_image = new Image();
+                        base_image.src = 'img/coaches/LUISADIAZ.jpg';
+                        base_image.onload = function () {
+            
+                            context.save();
+                            context.beginPath();
+                            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, true);
+                            context.closePath();
+                            context.clip();
+            
+                            context.drawImage(base_image, centerX - radius, centerY - radius, diameter, diameter);
+            
+            
+                            context.beginPath();
+                            context.arc(0, 0, 25, 0, Math.PI * 2, true);
+                            context.clip();
+                            context.closePath();
+                            context.restore();
+                        }
+                        */
+
+            return canvas;
+        }
+
+        document.getElementById('canvas').appendChild(createNewCanvas(['green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green']));
+        var asistencia = ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green'];
+        asistencia[2] = 'red';
     </script>
 </body>
 
