@@ -1,6 +1,7 @@
 var filteredClasses = [];
 var ALL_CLASSES = [];
 var AuthToken;
+const defaultFace = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png";
 const urlParams = new URLSearchParams(window.location.search);
 var coachid = urlParams.get('coachid');
 const showAll = urlParams.get('show');
@@ -57,26 +58,26 @@ function refreshClasses() {
 
 
 $(document).ready(function () {
-    $(document).on('click','canvas',function(event){
+    $(document).on('click', 'canvas', function (event) {
         var data = JSON.parse(event.target.dataset.classData);
         var mainData = JSON.parse(event.target.parentNode.parentNode.dataset.classData);
         var i = 1;
-        $('#modal-classDate').text(mainData.date.replace('<h5>',' ').replace('</h5>',''));
-        $('#modal-coachName').text( mainData.coach);
-        $('#bike-distribution > div * p').each(function() {
+        $('#modal-classDate').text(mainData.date.replace('<h5>', ', ').replace('</h5>', ''));
+        $('#modal-coachName').text(capitalizeFirstLetter(mainData.coach));
+        $('#bike-distribution > div * p').each(function () {
             this.innerHTML = '';
-            data.forEach(e =>{
-                if(e.id==i){
+            data.forEach(e => {
+                if (e.id == i) {
                     this.innerHTML = capitalizeFirstLetter(e.user.split(' ')[0]);
                 }
             });
             i++;
         });
-       // i=1;
-        $('#bike-distribution > div * img').each(function() {
-            this.src = 'https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png';
-            data.forEach(e =>{
-                if(e.id==i){
+        // i=1;
+        $('#bike-distribution > div * img').each(function () {
+            this.src = defaultFace;
+            data.forEach(e => {
+                if (e.id == i) {
                     this.src = e.img;
                 }
             });
@@ -86,7 +87,7 @@ $(document).ready(function () {
     });
     $(document).on('click', '.assistant-img', function (event) {
         document.getElementById('modal-assistant-name').innerHTML = event.target.dataset.name;
-        document.getElementById('modal-assistant-img').src = event.target.src;
+        $('#modal-assistant-img-lg').attr('src', event.target.src);
         $("#modal-assistant-detail").modal('show');
     });
     $('#inputState').on('change', function () {
@@ -114,17 +115,16 @@ $(document).ready(function () {
             opens: 'center'
         }, function (start, end, label) {
 
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             refreshClasses();
 
         });
     });
 
+    
     refreshClasses();
 });
 
 function resetWeek() {
-    console.log(getApiURL());
     $('input[name="daterange"]').data('daterangepicker').setStartDate(moment().startOf('week').add(1, 'day'));
     $('input[name="daterange"]').data('daterangepicker').setEndDate(moment().endOf('week').add(1, 'day'));
     refreshClasses();
@@ -166,9 +166,8 @@ function loadData() {
         if (today.setHours(0, 0, 0, 0) === dateFromServer(clasesPorFecha[0].start).setHours(0, 0, 0, 0)) {
             headerClass = 'todayHeader';
         }
-        console.log(headerClass);
         var dataTable = createDataTable(clasesPorFecha);
-        card = createNewCard(value3, cardDate, dataTable,headerClass);
+        card = createNewCard(value3, cardDate, dataTable, headerClass);
         card.id = "card" + value3;
         document.getElementById('accordion').appendChild(card);
     });
@@ -262,7 +261,7 @@ function createDataTable(data) {
 function getUsersList(x) {
     var classID = x.id;
     var users = x.member_class;
-    var colorsAssistencia = ['green','green','green','green','green','green','green','green','green','green','green','green','green','green','green'];
+    var colorsAssistencia = ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green'];
     var ul = document.createElement('ul');
     var li = document.createElement('li');
     ul.classList.add('list-group');
@@ -277,7 +276,9 @@ function getUsersList(x) {
         li.innerHTML = "Asistentes";
     }
     ul.appendChild(li);
-    users.sort(function(a,b) {return a.ref - b.ref});
+    users.sort(function (a, b) {
+        return a.ref - b.ref
+    });
     var classObjectForCanvas = [];
     users.forEach(user => {
         if (user.status == 'canceled') return;
@@ -286,6 +287,7 @@ function getUsersList(x) {
         li.classList.add('list-group-item');
 
         var img = document.createElement('img');
+       
         if (user.member_end == null) {
             user.member_end = {
                 name: "",
@@ -293,13 +295,14 @@ function getUsersList(x) {
             };
         }
         if (user.member_end.avatar_file_name.includes("undefined") || user.member_end.avatar_file_name.includes("undefined")) {
-            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png"
+            img.src =defaultFace;
         } else {
             img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.member_end.avatar_file_name.replace("members/", "");
         }
 
         img.classList.add('assistant-img');
-        img.dataset.name = user.name;
+        
+        img.dataset.name = user.member_end.name;
         var DivImg = document.createElement('div');
         DivImg.classList.add('thumbnail');
         DivImg.appendChild(img);
@@ -307,8 +310,12 @@ function getUsersList(x) {
         DivName.innerHTML = capitalizeFirstLetter(user.member_end.name);
         var DivBiciID = document.createElement('div');
         DivBiciID.innerHTML = `#` + user.ref;
-        colorsAssistencia[user.ref -1] = 'red';
-        classObjectForCanvas.push({"user":user.member_end.name,"id": user.ref,"img": img.src});
+        colorsAssistencia[user.ref - 1] = 'red';
+        classObjectForCanvas.push({
+            "user": user.member_end.name,
+            "id": user.ref,
+            "img": img.src
+        });
         var container = document.createElement('div');
         container.classList.add('container');
         var row = document.createElement('div');
@@ -338,7 +345,7 @@ function getUsersList(x) {
         var empty_user = document.createElement('li');
         empty_user.classList.add('list-group-item');
         empty_user.classList.add('list-group-flush');
-        empty_user.innerHTML = `<div class="container"><div class="row"><div class="col-3"><div class="thumbnail"><img src="https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png" class="assistant-img" data-name="No Registrado"></div></div><div class="col-6 list-assistant"><div> No Registrado</div></div><div class="col-3 list-assistant"><div>?</div></div></div></div>`;
+        empty_user.innerHTML = `<div class="container"><div class="row"><div class="col-3"><div class="thumbnail"><img src="${defaultFace}}" class="assistant-img" data-name="No Registrado"></div></div><div class="col-6 list-assistant"><div> No Registrado</div></div><div class="col-3 list-assistant"><div>?</div></div></div></div>`;
         ul.appendChild(empty_user);
     }
 
@@ -353,7 +360,7 @@ function getUsersList(x) {
     accordianDiv.classList.add('collapse');
     accordianDiv.id = "lista" + classID;
 
-    var listAndChartContainer =  document.createElement('div');
+    var listAndChartContainer = document.createElement('div');
     listAndChartContainer.classList.add('container');
     var row = document.createElement('div');
     row.classList.add('row');
@@ -361,7 +368,7 @@ function getUsersList(x) {
     row.dataset.classData = `{"coach": "${x.coach.name}" , "date" : "${spanishDate(dateFromServer(x.start))}" }`;
     chartCol.classList.add('col-12');
     chartCol.classList.add('col-md-4');
-    chartCol.appendChild(createNewCanvas(colorsAssistencia,classObjectForCanvas));
+    chartCol.appendChild(createNewCanvas(colorsAssistencia, classObjectForCanvas));
     var listCol = document.createElement('div');
     listCol.classList.add('col-12');
     listCol.classList.add('col-md-8');
@@ -376,9 +383,10 @@ function getUsersList(x) {
     tr.appendChild(td);
     return tr;
 }
-function createNewCanvas(colors,classObjectForCanvas){
+
+function createNewCanvas(colors, classObjectForCanvas) {
     var canvas = document.createElement('canvas');
-    canvas.dataset.classData = JSON.stringify(classObjectForCanvas) ;
+    canvas.dataset.classData = JSON.stringify(classObjectForCanvas);
     canvas.width = 160;
     canvas.height = 160;
     var context = canvas.getContext('2d');
@@ -392,78 +400,78 @@ function createNewCanvas(colors,classObjectForCanvas){
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[0];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[1];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[2];
     context.fill();
 
-    centerY = centerY + radius*YFactor;
+    centerY = centerY + radius * YFactor;
     centerX = 10;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[3];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[4];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[5];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[6];
     context.fill();
 
-    centerY = centerY + radius*YFactor;
+    centerY = centerY + radius * YFactor;
     centerX = 10;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[7];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[8];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[9];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[10];
     context.fill();
 
-    centerY = centerY + radius*YFactor;
+    centerY = centerY + radius * YFactor;
     centerX = 10;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[11];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[12];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[13];
     context.fill();
-    centerX = centerX + radius*XFactor;
+    centerX = centerX + radius * XFactor;
     context.beginPath();
     context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
     context.fillStyle = asistencia[14];
@@ -471,7 +479,7 @@ function createNewCanvas(colors,classObjectForCanvas){
     return canvas;
 }
 
-function createNewCard(id, Htitle, bodyContent,todayHeader) {
+function createNewCard(id, Htitle, bodyContent, todayHeader) {
     var card = document.createElement('div');
     card.classList.add('card');
     var cardHeader = document.createElement('div');

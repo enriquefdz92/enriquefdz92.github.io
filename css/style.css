@@ -122,3 +122,15 @@ canvas {
   font-size: large;
   color: crimson;
 }
+.modal-header {
+  display: block;
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+  border-top-left-radius: calc(0.3rem - 1px);
+  border-top-right-radius: calc(0.3rem - 1px);
+}
+.btn-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}

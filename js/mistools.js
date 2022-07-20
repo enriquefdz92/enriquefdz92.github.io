@@ -10,6 +10,7 @@ function dateFromServer(s) {
 
 function capitalizeFirstLetter(string) {
     var temp = '';
+    string = string.toLowerCase();
     string.split(" ").forEach(str => {
         temp = temp +" "+ str.charAt(0).toUpperCase() + str.slice(1);
     });
