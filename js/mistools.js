@@ -87,3 +87,4 @@ function sort() {
     });
      if (coachid) $('#accordion .class-collapse').collapse('show');
 }
+

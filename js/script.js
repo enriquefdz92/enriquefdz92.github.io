@@ -1,5 +1,7 @@
 var filteredClasses = [];
 var ALL_CLASSES = [];
+var CHART_DATA = {};
+var refreshChartData = false;
 var AuthToken;
 const defaultFace = "https://s3.amazonaws.com/atomboxcrm-images/members/defaultFace.png";
 const urlParams = new URLSearchParams(window.location.search);
@@ -29,12 +31,14 @@ function getClases(authKey) {
                 `;
                 return;
             }
+            refreshChartData = true;
             var classes = JSON.parse(xhr.response.replace("\"lessons\":", "\"classes\":")).classes;
             if (classes.length == 0) return;
             classes.forEach(clas => {
                 if (clas != undefined) ALL_CLASSES.push(clas);
             });
             loadData();
+
         }
         //    sort();
     };
@@ -42,6 +46,10 @@ function getClases(authKey) {
 }
 
 function refreshClasses() {
+    $("#inputState").prop("selectedIndex", 0);
+    coachid = null;
+    CHART_DATA = {};
+    refreshChartData = true;
     $("#loader").show();
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET", AuthUrl);
@@ -58,7 +66,7 @@ function refreshClasses() {
 
 
 $(document).ready(function () {
-    $(document).on('click', 'canvas', function (event) {
+    $(document).on('click', '.canvasDistribution', function (event) {
         var data = JSON.parse(event.target.dataset.classData);
         var mainData = JSON.parse(event.target.parentNode.parentNode.dataset.classData);
         var i = 1;
@@ -120,7 +128,7 @@ $(document).ready(function () {
         });
     });
 
-    
+
     refreshClasses();
 });
 
@@ -171,6 +179,9 @@ function loadData() {
         card.id = "card" + value3;
         document.getElementById('accordion').appendChild(card);
     });
+    refreshChartData = false;
+    updateChart();
+
 }
 
 function dataRow(x) {
@@ -219,6 +230,32 @@ function dataRow(x) {
     tr.appendChild(tdCoach);
     tr.appendChild(tdFecha);
     tr.appendChild(tdRegistrados);
+    if (refreshChartData) {
+        var asistenciadeUsuarios = 15 - x.available_capacity;
+        var charName = x.coach.name.split(" ")[0];
+        var s = {};
+        if (CHART_DATA.hasOwnProperty(charName)) {
+            s = CHART_DATA[charName];
+            x.member_class.forEach(m => {
+                var name = capitalizeFirstLetter(m.member_end.name);
+                if (m.status == 'canceled') return;
+                if (s.hasOwnProperty( name)) {
+                    s[ name] = s[ name] + 1;
+                } else {
+                    s[ name] = 1;
+                }
+            });
+            CHART_DATA[charName] = s;
+        } else {
+            x.member_class.forEach(m => {
+                var name = capitalizeFirstLetter(m.member_end.name);
+                if (m.status == 'canceled') return;
+                s[name] = 1;
+            });
+            CHART_DATA[charName] = s;
+        }
+    }
+
     return tr;
 }
 
@@ -248,6 +285,7 @@ function createDataTable(data) {
     var tbody = document.createElement('tbody');
 
     data.forEach(x => {
+
         tbody.appendChild(dataRow(x));
         tbody.appendChild(getUsersList(x));
 
@@ -287,7 +325,7 @@ function getUsersList(x) {
         li.classList.add('list-group-item');
 
         var img = document.createElement('img');
-       
+
         if (user.member_end == null) {
             user.member_end = {
                 name: "",
@@ -295,13 +333,13 @@ function getUsersList(x) {
             };
         }
         if (user.member_end.avatar_file_name.includes("undefined") || user.member_end.avatar_file_name.includes("undefined")) {
-            img.src =defaultFace;
+            img.src = defaultFace;
         } else {
             img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.member_end.avatar_file_name.replace("members/", "");
         }
 
         img.classList.add('assistant-img');
-        
+
         img.dataset.name = user.member_end.name;
         var DivImg = document.createElement('div');
         DivImg.classList.add('thumbnail');
@@ -386,6 +424,7 @@ function getUsersList(x) {
 
 function createNewCanvas(colors, classObjectForCanvas) {
     var canvas = document.createElement('canvas');
+    canvas.classList.add('canvasDistribution');
     canvas.dataset.classData = JSON.stringify(classObjectForCanvas);
     canvas.width = 160;
     canvas.height = 160;

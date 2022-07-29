@@ -16,7 +16,7 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.2/dist/chart.min.js"></script>
 </head>
 
 <body>
@@ -44,10 +44,20 @@
 
                     <div class="form-group row justify-content-center">
                         <label for="inputCoach" class="col-2 col-form-label">Coach</label>
-                        <div class="col-10 col-sm-6">
+                        <div class="col-8 col-sm-5">
                             <select id="inputState" class="form-control">
                                 <option selected>Todos</option>
                             </select>
+                        </div>
+                        <div class="col-2 col-sm-1">
+                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                data-bs-target="#modal-assistant-Chart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-bar-chart" viewBox="0 0 16 16">
+                                    <path
+                                        d="M4 11H2v3h2v-3zm5-4H7v7h2V7zm5-5v12h-2V2h2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </form>
@@ -73,9 +83,9 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header  justify-content-center ">
-                    <h3 >Clase <small class="text-muted" id = "modal-classDate">Jueves 14 08 pm</small></h3>
+                    <h3>Clase <small class="text-muted" id="modal-classDate">Jueves 14 08 pm</small></h3>
 
-                    <h3>Coach <small class="text-muted" id = "modal-coachName">Enrique Fernandez</small></h3>
+                    <h3>Coach <small class="text-muted" id="modal-coachName">Enrique Fernandez</small></h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -83,98 +93,83 @@
                         <div id="bike-distribution" class="container">
                             <div class="row justify-content-center">
                                 <div class="col col-4 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-4 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-4 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                             </div>
                             <div class="row justify-content-center">
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
                                 <div class="col col-3 justify-content-center">
-                                    <img class="img-fluid distribution-assistant-img"
-                                        src=""
+                                    <img class="img-fluid distribution-assistant-img" src=""
                                         style="max-width: 75px; margin-top: 10px">
                                     <p style="font-size: smaller;" class="h6"></p>
                                 </div>
@@ -210,8 +205,42 @@
         </div>
     </div>
 
-</body>
+    <!-- Assistant Chart Modal -->
+    <div class="modal fade" id="modal-assistant-Chart" tabindex="-1" aria-labelledby="modal-assistant-Chart"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modal-assistant-name" class="modal-title w-100 text-center">Grafica de Asistencia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="myChartBody">
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Assistant Detail Chart Modal -->
+    <div class="modal fade" id="modal-assistant-Chart-Detail" tabindex="-1" aria-labelledby="modal-assistant-Chart-Detail"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modal-assistant-name" class="modal-title w-100 text-center">Detalle de Asistencia</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="myChartDetailBody">
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="js/colorPalette.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
@@ -229,6 +258,7 @@
     crossorigin="anonymous"></script>
 <script src="js/mistools.js"></script>
 <script src="js/script.js"></script>
+<script src="js/chart.js"></script>
 
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
