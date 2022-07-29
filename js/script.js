@@ -114,7 +114,7 @@ $(document).ready(function () {
         $('input[name="daterange"]').daterangepicker({
             startDate: moment().startOf('week').add(1, 'day'),
             endDate: moment().endOf('week').add(1, 'day'),
-            minDate: moment().subtract(1, 'month'),
+            minDate: moment().subtract(3, 'month'),
             "locale": {
                 "applyLabel": "Aplicar",
                 "cancelLabel": "Cancelar",
@@ -237,19 +237,24 @@ function dataRow(x) {
         if (CHART_DATA.hasOwnProperty(charName)) {
             s = CHART_DATA[charName];
             x.member_class.forEach(m => {
-                var name = capitalizeFirstLetter(m.member_end.name);
                 if (m.status == 'canceled') return;
-                if (s.hasOwnProperty( name)) {
-                    s[ name] = s[ name] + 1;
+                if (m.member_end == null) return;
+                console.log(m);
+                var name = capitalizeFirstLetter(m.member_end.name != null ? m.member_end.name : "Usuario");
+                
+                if (s.hasOwnProperty(name)) {
+                    s[name] = s[name] + 1;
                 } else {
-                    s[ name] = 1;
+                    s[name] = 1;
                 }
             });
             CHART_DATA[charName] = s;
         } else {
             x.member_class.forEach(m => {
-                var name = capitalizeFirstLetter(m.member_end.name);
                 if (m.status == 'canceled') return;
+                if (m.member_end == null) return;
+                var name = capitalizeFirstLetter(m.member_end.name ? m.member_end.name : "Usuario");
+                
                 s[name] = 1;
             });
             CHART_DATA[charName] = s;

@@ -1,6 +1,7 @@
 var myChart;
 
 function updateChart() {
+
     $('#myChart').remove();
     $('#myChartBody').append('<canvas id="myChart" width="400" height="400"></canvas>');
     var ToSort = {};
@@ -44,7 +45,7 @@ function updateChart() {
             }]
         },
         options: {
-            
+
             onClick: function (event, clickedElements) {
                 if (clickedElements.length === 0) return;
                 const {
@@ -52,10 +53,11 @@ function updateChart() {
                     raw
                 } = clickedElements[0].element.$context;
                 const {
-                    backgroundColor,borderColor
+                    backgroundColor,
+                    borderColor
                 } = clickedElements[0].element.options;
                 const barLabel = event.chart.data.labels[dataIndex];
-                showDetailChart(barLabel, backgroundColor,borderColor);
+                showDetailChart(barLabel, backgroundColor, borderColor, raw);
             },
             scales: {
                 y: {
@@ -72,7 +74,10 @@ function updateChart() {
 
 }
 
-function showDetailChart(label,BACK_COLOR,BORDER_COLOR) {
+function showDetailChart(label, BACK_COLOR, BORDER_COLOR, n) {
+    $('#top10btn').on('click', function(){
+        showDetailChart(label, BACK_COLOR, BORDER_COLOR, 10);
+    });
     var ToSort = CHART_DATA[label];
     var dataObj = Object.fromEntries(
         Object.entries(ToSort).sort(([, b], [, a]) => a - b)
@@ -81,13 +86,13 @@ function showDetailChart(label,BACK_COLOR,BORDER_COLOR) {
     $('#myDetailChart').remove();
     $('#myChartDetailBody').append('<canvas id="myDetailChart" width="400" height="400"></canvas>');
     const Dctx = document.getElementById('myDetailChart').getContext('2d');
-    const labelss = Object.keys(dataObj);
+    const labelss = Object.keys(dataObj).slice(0, n);
     const data = {
         labels: labelss,
         datasets: [{
             axis: 'y',
             label: 'Clases asistidas',
-            data: Object.values(dataObj),
+            data: Object.values(dataObj).slice(0, n),
             fill: false,
             backgroundColor: [
                 BACK_COLOR
