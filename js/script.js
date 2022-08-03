@@ -69,9 +69,10 @@ $(document).ready(function () {
     $(document).on('click', '.canvasDistribution', function (event) {
         var data = JSON.parse(event.target.dataset.classData);
         var mainData = JSON.parse(event.target.parentNode.parentNode.dataset.classData);
-        var i = 1;
+        var i = 15;
         $('#modal-classDate').text(mainData.date.replace('<h5>', ', ').replace('</h5>', ''));
         $('#modal-coachName').text(capitalizeFirstLetter(mainData.coach));
+        $('.coach-img').attr('src','img/coaches/'+mainData.coach.replace(' ','')+'.jpg');
         $('#bike-distribution > div * p').each(function () {
             this.innerHTML = '';
             data.forEach(e => {
@@ -79,17 +80,20 @@ $(document).ready(function () {
                     this.innerHTML = capitalizeFirstLetter(e.user.split(' ')[0]);
                 }
             });
-            i++;
+            i--;
         });
-        // i=1;
-        $('#bike-distribution > div * img').each(function () {
-            this.src = defaultFace;
+        i=15;
+        $('#bike-distribution > div * img:not(.coach-img)').each(function () {
+            this.src = "img/bikes/bike__" + i +".png";
+            var blur = 'bluredImg';
+            this.classList.remove(blur);
             data.forEach(e => {
-                if (e.id == i) {
-                    this.src = e.img;
-                }
+                    if(e.id == i ){
+                        blur = 'n';
+                    }
             });
-            i++;
+            this.classList.add(blur);
+            i--;
         });
         $("#modal-class-details").modal('show');
     });

@@ -134,3 +134,9 @@ a {
   right: 20px;
   top: 20px;
 }
+.bluredImg {
+  filter: blur(0.2rem);
+}
+.coach-img{
+  border-radius: 5px;
+}
