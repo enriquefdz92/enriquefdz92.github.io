@@ -71,7 +71,7 @@ $(document).ready(function () {
         var mainData = JSON.parse(event.target.parentNode.parentNode.dataset.classData);
         var i = 15;
         $('#modal-classDate').text(mainData.date.replace('<h5>', ', ').replace('</h5>', ''));
-        $('#modal-coachName').text(capitalizeFirstLetter(mainData.coach));
+        $('#modal-coachName').text(capitalizeFirstLetter(mainData.coach.split(' ')[0]));
         $('.coach-img').attr('src','img/coaches/'+mainData.coach.replace(' ','')+'.jpg');
         $('#bike-distribution > div * p').each(function () {
             this.innerHTML = '';
