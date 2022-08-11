@@ -137,6 +137,24 @@ a {
 .bluredImg {
   filter: blur(0.2rem);
 }
-.coach-img{
+.coach-img {
   border-radius: 5px;
+}
+
+.headerCount {
+  position: absolute;
+  top: 5px;
+  text-align: left;
+  width: 100%;
+}
+.headerCount > p{
+  position: absolute;
+  top: 2px;
+  text-align: left;
+  font-size: 9px;
+}
+
+.headerCount > i{
+  position: absolute;
+  top: 10px;
 }

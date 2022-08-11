@@ -66,6 +66,10 @@ function refreshClasses() {
 
 
 $(document).ready(function () {
+    $(document).on('click', '.headerCount', function(){
+        $('.headerCount > i').toggle();
+        $('.headerCount > p').toggle();
+    });
     $(document).on('click', '.canvasDistribution', function (event) {
         var data = JSON.parse(event.target.dataset.classData);
         var mainData = JSON.parse(event.target.parentNode.parentNode.dataset.classData);
@@ -169,7 +173,9 @@ function loadData() {
     });
     classes.forEach(cardDate => {
         var id;
+        count = 0;
         var clasesPorFecha = wanted.filter(x => {
+
             return spanishDate(dateFromServer(x.start)).startsWith(cardDate);
         });
         let value3 = clasesPorFecha[0].start.split(" ")[0].replace("-", "");
@@ -179,8 +185,20 @@ function loadData() {
             headerClass = 'todayHeader';
         }
         var dataTable = createDataTable(clasesPorFecha);
-        card = createNewCard(value3, cardDate, dataTable, headerClass);
+        card = createNewCard(value3, cardDate, dataTable, headerClass, count);
         card.id = "card" + value3;
+        var topCoach = '-';
+        passClass = 0;
+        card.querySelectorAll('.disponibilidad').forEach(x=>{
+            count = count + parseInt( x.children[0].innerHTML);
+            if(parseInt(x.children[0].innerHTML) >passClass){
+                topCoach = x.parentElement.querySelector('.coachname').innerHTML.split(" ")[0];
+                passClass = x.children[0].innerHTML;
+            }
+        });
+        console.log(topCoach);
+        card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i> <p style="display: none;"> Clases: ${card.querySelectorAll('.disponibilidad').length}  <br> Registrados: ${count} <br> Promedio: ${Math.floor(count/card.querySelectorAll('.disponibilidad').length)} <br> Top Coach: ${capitalizeFirstLetter(topCoach)}</p>`;
+       // card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i>`;
         document.getElementById('accordion').appendChild(card);
     });
     refreshChartData = false;
@@ -243,7 +261,6 @@ function dataRow(x) {
             x.member_class.forEach(m => {
                 if (m.status == 'canceled') return;
                 if (m.member_end == null) return;
-                console.log(m);
                 var name = capitalizeFirstLetter(m.member_end.name != null ? m.member_end.name : "Usuario");
                 
                 if (s.hasOwnProperty(name)) {
@@ -527,7 +544,7 @@ function createNewCanvas(colors, classObjectForCanvas) {
     return canvas;
 }
 
-function createNewCard(id, Htitle, bodyContent, todayHeader) {
+function createNewCard(id, Htitle, bodyContent, todayHeader, classCount) {
     var card = document.createElement('div');
     card.classList.add('card');
     var cardHeader = document.createElement('div');
@@ -544,6 +561,14 @@ function createNewCard(id, Htitle, bodyContent, todayHeader) {
     button.ariaControls = 'collapse' + id;
     button.innerHTML = Htitle;
     title.appendChild(button);
+
+    var count = document.createElement('h5');
+    count.classList.add('mb-0');
+    count.classList.add('headerCount');
+    title.appendChild(count);
+
+
+    
     cardHeader.appendChild(title);
     var cardColapse = document.createElement('div');
     cardColapse.id = 'collapse' + id;
