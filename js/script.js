@@ -1,3 +1,14 @@
+if (!String.format) {
+    String.format = function (format) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return format.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] != 'undefined' ?
+                args[number] :
+                match;
+        });
+    };
+}
+
 var filteredClasses = [];
 var ALL_CLASSES = [];
 var CHART_DATA = {};
@@ -66,9 +77,10 @@ function refreshClasses() {
 
 
 $(document).ready(function () {
-    $(document).on('click', '.headerCount', function(){
+    $(document).on('click', '.headerCount', function () {
         $('.headerCount > i').toggle();
         $('.headerCount > p').toggle();
+        $('#accordion .class-collapse').collapse('show');
     });
     $(document).on('click', '.canvasDistribution', function (event) {
         var data = JSON.parse(event.target.dataset.classData);
@@ -76,25 +88,29 @@ $(document).ready(function () {
         var i = 15;
         $('#modal-classDate').text(mainData.date.replace('<h5>', ', ').replace('</h5>', ''));
         $('#modal-coachName').text(capitalizeFirstLetter(mainData.coach.split(' ')[0]));
-        $('.coach-img').attr('src','img/coaches/'+mainData.coach.replace(' ','')+'.jpg');
+        $('.coach-img').attr('src', 'img/coaches/' + mainData.coach.replace(' ', '') + '.jpg');
         $('#bike-distribution > div * p').each(function () {
             this.innerHTML = '';
             data.forEach(e => {
                 if (e.id == i) {
-                    this.innerHTML = capitalizeFirstLetter(e.user.split(' ')[0]);
+                    if (e.user == "No Registrado"){;
+                        this.innerHTML = "No Registrado" 
+                    }else{
+                        this.innerHTML = capitalizeFirstLetter(e.user.split(' ')[0]);
+                    }
                 }
             });
             i--;
         });
-        i=15;
+        i = 15;
         $('#bike-distribution > div * img:not(.coach-img)').each(function () {
-            this.src = "img/bikes/bike__" + i +".png";
+            this.src = "img/bikes/bike__" + i + ".png";
             var blur = 'bluredImg';
             this.classList.remove(blur);
             data.forEach(e => {
-                    if(e.id == i ){
-                        blur = 'n';
-                    }
+                if (e.id == i) {
+                    blur = 'n';
+                }
             });
             this.classList.add(blur);
             i--;
@@ -108,7 +124,10 @@ $(document).ready(function () {
     });
     $('#inputState').on('change', function () {
         coachid = this.value;
-        if (this.value == "Todos") coachid = null;
+        if (this.value == "Todos") {
+            coachid = null;
+            
+        }
         loadData();
         sort();
     });
@@ -189,16 +208,16 @@ function loadData() {
         card.id = "card" + value3;
         var topCoach = '-';
         passClass = 0;
-        card.querySelectorAll('.disponibilidad').forEach(x=>{
-            count = count + parseInt( x.children[0].innerHTML);
-            if(parseInt(x.children[0].innerHTML) >passClass){
+        card.querySelectorAll('.disponibilidad').forEach(x => {
+            count = count + parseInt(x.children[0].innerHTML);
+            if (parseInt(x.children[0].innerHTML) > passClass) {
                 topCoach = x.parentElement.querySelector('.coachname').innerHTML.split(" ")[0];
                 passClass = x.children[0].innerHTML;
             }
         });
         console.log(topCoach);
         card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i> <p style="display: none;"> Clases: ${card.querySelectorAll('.disponibilidad').length}  <br> Registrados: ${count} <br> Promedio: ${Math.floor(count/card.querySelectorAll('.disponibilidad').length)} <br> Top Coach: ${capitalizeFirstLetter(topCoach)}</p>`;
-       // card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i>`;
+        // card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i>`;
         document.getElementById('accordion').appendChild(card);
     });
     refreshChartData = false;
@@ -241,8 +260,8 @@ function dataRow(x) {
 
     var tdFecha = document.createElement('td');
     tdFecha.id = "date";
-    tdFecha.innerHTML = spanishDate(dateFromServer(x.start));
-
+    tdFecha.innerHTML =x.title + "<h5>" + spanishDate(dateFromServer(x.start)).split('<h5>')[1];
+    console.log(tdFecha);
     var tdRegistrados = document.createElement('td');
     tdRegistrados.classList.add("disponibilidad");
     if (x.available_capacity < 15) {
@@ -262,7 +281,7 @@ function dataRow(x) {
                 if (m.status == 'canceled') return;
                 if (m.member_end == null) return;
                 var name = capitalizeFirstLetter(m.member_end.name != null ? m.member_end.name : "Usuario");
-                
+
                 if (s.hasOwnProperty(name)) {
                     s[name] = s[name] + 1;
                 } else {
@@ -275,7 +294,7 @@ function dataRow(x) {
                 if (m.status == 'canceled') return;
                 if (m.member_end == null) return;
                 var name = capitalizeFirstLetter(m.member_end.name ? m.member_end.name : "Usuario");
-                
+
                 s[name] = 1;
             });
             CHART_DATA[charName] = s;
@@ -326,31 +345,20 @@ function getUsersList(x) {
     var classID = x.id;
     var users = x.member_class;
     var colorsAssistencia = ['green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green', 'green'];
-    var ul = document.createElement('ul');
-    var li = document.createElement('li');
-    ul.classList.add('list-group');
-    ul.classList.add('ul-list');
-    li.classList.add('list-group-item');
-    li.classList.add('list-group-flush');
+    var classObjectForCanvas = [];
+    var theme = 'success';
+    var title = "Asistentes";
+    var asistentesRows = [];
     if (users.length == 0 && x.capacity == 15) {
-        li.classList.add('list-group-item-danger');
-        li.innerHTML = "No hay asistentes";
-    } else {
-        li.classList.add('list-group-item-success');
-        li.innerHTML = "Asistentes";
+        theme = 'danger';
+        title = "No hay asistentes";
     }
-    ul.appendChild(li);
     users.sort(function (a, b) {
         return a.ref - b.ref
     });
-    var classObjectForCanvas = [];
     users.forEach(user => {
         if (user.status == 'canceled') return;
-
-        var li = document.createElement('li');
-        li.classList.add('list-group-item');
-
-        var img = document.createElement('img');
+        var img = '';
 
         if (user.member_end == null) {
             user.member_end = {
@@ -359,60 +367,40 @@ function getUsersList(x) {
             };
         }
         if (user.member_end.avatar_file_name.includes("undefined") || user.member_end.avatar_file_name.includes("undefined")) {
-            img.src = defaultFace;
+            img = defaultFace;
         } else {
-            img.src = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.member_end.avatar_file_name.replace("members/", "");
+            img = "https://s3.amazonaws.com/atomboxcrm-images/members/" + user.member_end.avatar_file_name.replace("members/", "");
         }
+        asistentesRows.push(String.format(asistenciaLITemplate, img, capitalizeFirstLetter(user.member_end.name), user.ref));
 
-        img.classList.add('assistant-img');
-
-        img.dataset.name = user.member_end.name;
-        var DivImg = document.createElement('div');
-        DivImg.classList.add('thumbnail');
-        DivImg.appendChild(img);
-        var DivName = document.createElement('div');
-        DivName.innerHTML = capitalizeFirstLetter(user.member_end.name);
-        var DivBiciID = document.createElement('div');
-        DivBiciID.innerHTML = `#` + user.ref;
         colorsAssistencia[user.ref - 1] = 'red';
         classObjectForCanvas.push({
             "user": user.member_end.name,
             "id": user.ref,
             "img": img.src
         });
-        var container = document.createElement('div');
-        container.classList.add('container');
-        var row = document.createElement('div');
-        row.classList.add('row');
-        var col2 = document.createElement('div');
-        col2.classList.add('col-3');
-        col2.appendChild(DivImg);
-        var col10 = document.createElement('div');
-        col10.classList.add('col-6');
-        col10.classList.add('list-assistant');
-        col10.appendChild(DivName);
 
-        var col3 = document.createElement('div');
-        col3.classList.add('col-3');
-        col3.classList.add('list-assistant');
-        col3.appendChild(DivBiciID);
-
-        row.appendChild(col2);
-        row.appendChild(col10);
-        row.appendChild(col3);
-        container.appendChild(row);
-        li.appendChild(container);
-        li.id = "assistant-li";
-        ul.appendChild(li);
     });
     for (let i = 0; i < 15 - x.capacity; i++) {
-        var empty_user = document.createElement('li');
-        empty_user.classList.add('list-group-item');
-        empty_user.classList.add('list-group-flush');
-        empty_user.innerHTML = `<div class="container"><div class="row"><div class="col-3"><div class="thumbnail"><img src="${defaultFace}}" class="assistant-img" data-name="No Registrado"></div></div><div class="col-6 list-assistant"><div> No Registrado</div></div><div class="col-3 list-assistant"><div>?</div></div></div></div>`;
-        ul.appendChild(empty_user);
+        var bike = 14;
+        while (bike > 0) {
+            const element = colorsAssistencia[bike];
+            if (element == 'green') {
+                colorsAssistencia[bike] = 'red';
+                classObjectForCanvas.push({
+                    "user": "No Registrado",
+                    "id": bike + 1,
+                    "img": defaultFace
+                });
+                break;
+            }
+            bike--;
+        }
+
+        asistentesRows.push(String.format(asistenciaLITemplate, defaultFace, capitalizeFirstLetter("No Registrado"), bike + 1));
     }
 
+    var Asistentesul = bootstrapUL('', title, asistentesRows, theme)
 
     var tr = document.createElement('tr');
     var td = document.createElement('td');
@@ -436,7 +424,7 @@ function getUsersList(x) {
     var listCol = document.createElement('div');
     listCol.classList.add('col-12');
     listCol.classList.add('col-md-8');
-    listCol.appendChild(ul);
+    listCol.appendChild(Asistentesul);
 
     row.appendChild(chartCol);
     row.appendChild(listCol);
@@ -568,7 +556,7 @@ function createNewCard(id, Htitle, bodyContent, todayHeader, classCount) {
     title.appendChild(count);
 
 
-    
+
     cardHeader.appendChild(title);
     var cardColapse = document.createElement('div');
     cardColapse.id = 'collapse' + id;
