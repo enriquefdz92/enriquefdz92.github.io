@@ -5,6 +5,12 @@ function updateChart() {
     $('#myChart').remove();
     $('#myChartBody').append('<canvas id="myChart" width="400" height="400"></canvas>');
     var ToSort = {};
+    var labels = [];
+    Object.keys(CHART_DATA).forEach(d => {
+        CHART_DATA[d + " (" + CHART_DATA[d]["count"] + ")"] = CHART_DATA[d]
+        delete CHART_DATA[d + " (" + CHART_DATA[d]["count"] + ")"]["count"];
+        delete CHART_DATA[d];
+    });
     Object.keys(CHART_DATA).forEach(d => {
         var sum = 0;
         Object.values(CHART_DATA[d]).forEach(v => {
@@ -12,16 +18,29 @@ function updateChart() {
         });
         ToSort[d] = sum;
     });
+
+    
+    
     var sortable = Object.fromEntries(
         Object.entries(ToSort).sort(([, b], [, a]) => a - b)
-    );
+        );
+
+
+        Object.keys(sortable).forEach(d => {
+            var valueToPush = new Array();
+            valueToPush[0] = d.split(" ")[0];
+            valueToPush[1] = d.split(" ")[1];
+            labels.push(valueToPush);
+        });
+
+        console.log(labels);
 
     const ctx = document.getElementById('myChart').getContext('2d');
 
     myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: Object.keys(sortable),
+            labels: labels,
             datasets: [{
                 label: 'Cantidad de Usuarios',
                 data: Object.values(sortable),
@@ -56,7 +75,9 @@ function updateChart() {
                     backgroundColor,
                     borderColor
                 } = clickedElements[0].element.options;
-                const barLabel = event.chart.data.labels[dataIndex];
+                var barLabel = event.chart.data.labels[dataIndex];
+                barLabel = barLabel[0] + " " + barLabel[1];
+                console.log(barLabel);
                 showDetailChart(barLabel, backgroundColor, borderColor, raw);
             },
             scales: {
@@ -75,7 +96,7 @@ function updateChart() {
 }
 
 function showDetailChart(label, BACK_COLOR, BORDER_COLOR, n) {
-    $('#top10btn').on('click', function(){
+    $('#top10btn').on('click', function () {
         showDetailChart(label, BACK_COLOR, BORDER_COLOR, 10);
     });
     var ToSort = CHART_DATA[label];

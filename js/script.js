@@ -215,7 +215,6 @@ function loadData() {
                 passClass = x.children[0].innerHTML;
             }
         });
-        console.log(topCoach);
         card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i> <p style="display: none;"> Clases: ${card.querySelectorAll('.disponibilidad').length}  <br> Registrados: ${count} <br> Promedio: ${Math.floor(count/card.querySelectorAll('.disponibilidad').length)} <br> Top Coach: ${capitalizeFirstLetter(topCoach)}</p>`;
         // card.querySelector('.headerCount').innerHTML = `<i class="bi bi-info-circle"></i>`;
         document.getElementById('accordion').appendChild(card);
@@ -261,7 +260,6 @@ function dataRow(x) {
     var tdFecha = document.createElement('td');
     tdFecha.id = "date";
     tdFecha.innerHTML =x.title + "<h5>" + spanishDate(dateFromServer(x.start)).split('<h5>')[1];
-    console.log(tdFecha);
     var tdRegistrados = document.createElement('td');
     tdRegistrados.classList.add("disponibilidad");
     if (x.available_capacity < 15) {
@@ -287,7 +285,13 @@ function dataRow(x) {
                 } else {
                     s[name] = 1;
                 }
+
             });
+            if (s.hasOwnProperty("count")) {
+                s["count"] = s["count"] + 1;
+            } else {
+                s["count"] = 1;
+            }
             CHART_DATA[charName] = s;
         } else {
             x.member_class.forEach(m => {
@@ -297,6 +301,11 @@ function dataRow(x) {
 
                 s[name] = 1;
             });
+            if (s.hasOwnProperty("count")) {
+                s["count"] = s["count"] + 1;
+            } else {
+                s["count"] = 1;
+            }
             CHART_DATA[charName] = s;
         }
     }
